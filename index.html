@@ -1881,3 +1881,66 @@
   </script>
 </body>
 </html>
+<script>
+// Mobile aur Desktop ke liye Auto-Fix Image Upload Script
+window.addEventListener('DOMContentLoaded', function() {
+    const fileInput = document.getElementById('file-input-main');
+    if (!fileInput) return;
+
+    // Purane events ko hata kar naya robust listener lagana
+    const newInput = fileInput.cloneNode(true);
+    fileInput.parentNode.replaceChild(newInput, fileInput);
+
+    newInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const img = new Image();
+            img.onload = function() {
+                const canvas = document.getElementById('filtered-canvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+
+                // Mobile RAM freeze bachane ke liye max size limit (1200px)
+                let width = img.width;
+                let height = img.height;
+                const maxSize = 1200; 
+
+                if (width > maxSize || height > maxSize) {
+                    if (width > height) {
+                        height = Math.round((height * maxSize) / width);
+                        width = maxSize;
+                    } else {
+                        width = Math.round((width * maxSize) / height);
+                        height = maxSize;
+                    }
+                }
+
+                canvas.width = width;
+                canvas.height = height;
+                ctx.drawImage(img, 0, 0, width, height);
+                
+                // Original canvas update for compare mode
+                const origCanvas = document.getElementById('original-canvas');
+                if (origCanvas) {
+                    origCanvas.width = width;
+                    origCanvas.height = height;
+                    const origCtx = origCanvas.getContext('2d');
+                    origCtx.drawImage(img, 0, 0, width, height);
+                }
+
+                // Agar app mein state save ya render function maujood ho toh trigger karna
+                if (typeof window.refreshCanvas === 'function') {
+                    window.refreshCanvas();
+                } else if (typeof window.applyFilters === 'function') {
+                    window.applyFilters();
+                }
+            };
+            img.src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+    });
+});
+</script>
