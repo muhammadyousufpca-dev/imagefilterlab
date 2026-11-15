@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ImageFilterLab - Online Image Editor & Filter Studio</title>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background-color: var(--bg-card);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            font-size: 1.5rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .main-container {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            flex: 1;
+            gap: 1.5rem;
+            padding: 1.5rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        @media (max-width: 900px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .sidebar {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            max-height: calc(100vh - 120px);
+            overflow-y: auto;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .control-group label {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            text-align: center;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-main);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--border);
+        }
+
+        .file-upload-btn {
+            border: 2px dashed var(--border);
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .file-upload-btn:hover {
+            border-color: var(--primary);
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .workspace {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+            min-height: 400px;
+        }
+
+        canvas {
+            max-width: 100%;
+            max-height: 70vh;
+            border-radius: 4px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+
+        .placeholder-text {
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        .actions {
+            display: flex;
+            gap: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>✨ ImageFilterLab</h1>
+        <button class="btn btn-secondary" id="resetBtn" style="display:none;">Reset Filters</button>
+    </header>
+
+    <div class="main-container">
+        <!-- Sidebar Controls -->
+        <div class="sidebar">
+            <div class="control-group">
+                <label>Upload Image</label>
+                <label for="upload" class="file-upload-btn">
+                    📁 Choose an Image
+                    <input type="file" id="upload" accept="image/*">
+                </label>
+            </div>
+
+            <div class="control-group">
+                <label>Brightness <span id="brightnessVal">100%</span></label>
+                <input type="range" id="brightness" min="0" max="200" value="100" disabled>
+            </div>
+
+            <div class="control-group">
+                <label>Contrast <span id="contrastVal">100%</span></label>
+                <input type="range" id="contrast" min="0" max="200" value="100" disabled>
+            </div>
+
+            <div class="control-group">
+                <label>Saturation <span id="saturationVal">100%</span></label>
+                <input type="range" id="saturation" min="0" max="200" value="100" disabled>
+            </div>
+
+            <div class="control-group">
+                <label>Blur <span id="blurVal">0px</span></label>
+                <input type="range" id="blur" min="0" max="20" value="0" disabled>
+            </div>
+
+            <div class="control-group">
+                <label>Grayscale <span id="grayscaleVal">0%</span></label>
+                <input type="range" id="grayscale" min="0" max="100" value="0" disabled>
+            </div>
+
+            <div class="actions">
+                <button class="btn" id="downloadBtn" style="flex:1;" disabled>Download Image</button>
+            </div>
+        </div>
+
+        <!-- Workspace Preview -->
+        <div class="workspace">
+            <div class="placeholder-text" id="placeholder">
+                <h3>No image uploaded yet</h3>
+                <p>Choose an image from the left sidebar to start editing.</p>
+            </div>
+            <canvas id="canvas" style="display:none;"></canvas>
+        </div>
+    </div>
+
+    <script>
+        const upload = document.getElementById('upload');
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const placeholder = document.getElementById('placeholder');
+        const resetBtn = document.getElementById('resetBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+
+        const brightness = document.getElementById('brightness');
+        const contrast = document.getElementById('contrast');
+        const saturation = document.getElementById('saturation');
+        const blur = document.getElementById('blur');
+        const grayscale = document.getElementById('grayscale');
+
+        const brightnessVal = document.getElementById('brightnessVal');
+        const contrastVal = document.getElementById('contrastVal');
+        const saturationVal = document.getElementById('saturationVal');
+        const blurVal = document.getElementById('blurVal');
+        const grayscaleVal = document.getElementById('grayscaleVal');
+
+        let img = new Image();
+        let fileLoaded = false;
+
+        upload.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    img.src = event.target.result;
+                    img.onload = function() {
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                        ctx.drawImage(img, 0, 0);
+                        canvas.style.display = 'block';
+                        placeholder.style.display = 'none';
+                        resetBtn.style.display = 'block';
+                        downloadBtn.disabled = false;
+
+                        // Enable sliders
+                        brightness.disabled = false;
+                        contrast.disabled = false;
+                        saturation.disabled = false;
+                        blur.disabled = false;
+                        grayscale.disabled = false;
+
+                        fileLoaded = true;
+                        applyFilters();
+                    }
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function applyFilters() {
+            if (!fileLoaded) return;
+
+            const b = brightness.value;
+            const c = contrast.value;
+            const s = saturation.value;
+            const bl = blur.value;
+            const g = grayscale.value;
+
+            brightnessVal.innerText = b + '%';
+            contrastVal.innerText = c + '%';
+            saturationVal.innerText = s + '%';
+            blurVal.innerText = bl + 'px';
+            grayscaleVal.innerText = g + '%';
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.filter = `brightness(${b}%) contrast(${c}%) saturate(${s}%) blur(${bl}px) grayscale(${g}%)`;
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        }
+
+        [brightness, contrast, saturation, blur, grayscale].forEach(slider => {
+            slider.addEventListener('input', applyFilters);
+        });
+
+        resetBtn.addEventListener('click', () => {
+            brightness.value = 100;
+            contrast.value = 100;
+            saturation.value = 100;
+            blur.value = 0;
+            grayscale.value = 0;
+            applyFilters();
+        });
+
+        downloadBtn.addEventListener('click', () => {
+            const link = document.createElement('a');
+            link.download = 'filtered-image.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        });
+    </script>
+</body>
+</html>
