@@ -1,325 +1,1883 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ImageFilterLab - Online Image Editor & Filter Studio</title>
-    <style>
-        :root {
-            --primary: #6366f1;
-            --primary-hover: #4f46e5;
-            --bg-dark: #0f172a;
-            --bg-card: #1e293b;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --border: #334155;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title id="seo-title">ImageFilterLab — Free Online Image Filter and Photo Editing Studio</title>
+  <meta id="seo-description" name="description" content="Free online image filter and photo editing studio. Apply AI-style presets, virtual makeup, beauty retouching, stickers, custom text, frames, crop/resize, and CSS filters 100% locally in your browser." />
+  <link id="seo-canonical" rel="canonical" href="https://imagefilterlab.com/" />
+  <meta property="og:type" content="website" />
+  <meta id="og-title" property="og:title" content="ImageFilterLab — Free Online Image Filter and Photo Editing Studio" />
+  <meta id="og-description" property="og:description" content="100% browser-based non-destructive photo editor, virtual makeup studio, sticker & text designer, and CSS code generator." />
+  <meta property="og:site_name" content="ImageFilterLab" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%234f46e5'/%3E%3Cstop offset='100%25' stop-color='%2306b6d4'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Ccircle cx='26' cy='28' r='11' fill='none' stroke='%23fff' stroke-width='4'/%3E%3Ccircle cx='38' cy='36' r='11' fill='none' stroke='%23a5f3fc' stroke-width='4'/%3E%3C/svg%3E" />
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+            mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace']
+          }
         }
+      }
+    };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,700&family=Oswald:wght@600&family=Pacifico&display=swap" rel="stylesheet" />
 
-        body {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
+  <!-- Structured Data (Organization, WebSite, SoftwareApplication, FAQPage) -->
+  <script id="json-ld-schema" type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "name": "ImageFilterLab",
+        "url": "https://imagefilterlab.com/",
+        "description": "Privacy-first browser-based photo editing studio, virtual makeup editor, sticker & typography designer, and CSS filter generator."
+      },
+      {
+        "@type": "WebSite",
+        "name": "ImageFilterLab",
+        "url": "https://imagefilterlab.com/"
+      },
+      {
+        "@type": "SoftwareApplication",
+        "name": "ImageFilterLab Online Photo Studio",
+        "applicationCategory": "MultimediaApplication",
+        "operatingSystem": "Any (Web Browser)",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+      }
+    ]
+  }
+  </script>
 
-        header {
-            background-color: var(--bg-card);
-            border-bottom: 1px solid var(--border);
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+  <style>
+    ::-webkit-scrollbar { width: 7px; height: 7px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.4); border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(100, 116, 139, 0.7); }
 
-        header h1 {
-            font-size: 1.5rem;
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
+    .checkerboard-bg {
+      background-image:
+        linear-gradient(45deg, rgba(148, 163, 184, 0.14) 25%, transparent 25%),
+        linear-gradient(-45deg, rgba(148, 163, 184, 0.14) 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, rgba(148, 163, 184, 0.14) 75%),
+        linear-gradient(-45deg, transparent 75%, rgba(148, 163, 184, 0.14) 75%);
+      background-size: 20px 20px;
+      background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+    }
 
-        .main-container {
-            display: grid;
-            grid-template-columns: 320px 1fr;
-            flex: 1;
-            gap: 1.5rem;
-            padding: 1.5rem;
-            max-width: 1400px;
-            margin: 0 auto;
-            width: 100%;
-        }
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      height: 6px;
+      border-radius: 999px;
+      background: #cbd5e1;
+      outline: none;
+    }
+    .dark input[type="range"] { background: #334155; }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      background: #4f46e5;
+      cursor: pointer;
+      border: 2px solid #ffffff;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.35);
+      transition: transform 0.15s ease;
+    }
+    input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.15); }
 
-        @media (max-width: 900px) {
-            .main-container {
-                grid-template-columns: 1fr;
-            }
-        }
+    .compare-handle { touch-action: none; }
+    #canvas-stage { touch-action: none; }
 
-        .sidebar {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 1.5rem;
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-            max-height: calc(100vh - 120px);
-            overflow-y: auto;
-        }
-
-        .control-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .control-group label {
-            font-size: 0.875rem;
-            color: var(--text-muted);
-            display: flex;
-            justify-content: space-between;
-        }
-
-        input[type="range"] {
-            width: 100%;
-            accent-color: var(--primary);
-            cursor: pointer;
-        }
-
-        .btn {
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            padding: 0.75rem 1rem;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-            text-align: center;
-            display: inline-block;
-        }
-
-        .btn:hover {
-            background-color: var(--primary-hover);
-        }
-
-        .btn-secondary {
-            background-color: transparent;
-            border: 1px solid var(--border);
-            color: var(--text-main);
-        }
-
-        .btn-secondary:hover {
-            background-color: var(--border);
-        }
-
-        .file-upload-btn {
-            border: 2px dashed var(--border);
-            padding: 1.5rem;
-            border-radius: 8px;
-            text-align: center;
-            cursor: pointer;
-            transition: border-color 0.2s;
-        }
-
-        .file-upload-btn:hover {
-            border-color: var(--primary);
-        }
-
-        input[type="file"] {
-            display: none;
-        }
-
-        .workspace {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 2rem;
-            position: relative;
-            overflow: hidden;
-            min-height: 400px;
-        }
-
-        canvas {
-            max-width: 100%;
-            max-height: 70vh;
-            border-radius: 4px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
-        }
-
-        .placeholder-text {
-            color: var(--text-muted);
-            text-align: center;
-        }
-
-        .actions {
-            display: flex;
-            gap: 1rem;
-        }
-    </style>
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in { animation: fadeSlideUp 0.22s ease-out forwards; }
+  </style>
 </head>
-<body>
+<body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 font-sans antialiased transition-colors duration-200 selection:bg-indigo-500 selection:text-white">
 
-    <header>
-        <h1>✨ ImageFilterLab</h1>
-        <button class="btn btn-secondary" id="resetBtn" style="display:none;">Reset Filters</button>
-    </header>
+  <!-- Toast Notification Banner -->
+  <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
-    <div class="main-container">
-        <!-- Sidebar Controls -->
-        <div class="sidebar">
-            <div class="control-group">
-                <label>Upload Image</label>
-                <label for="upload" class="file-upload-btn">
-                    📁 Choose an Image
-                    <input type="file" id="upload" accept="image/*">
-                </label>
+  <!-- TOP NAVIGATION HEADER -->
+  <header class="sticky top-0 z-40 border-b border-slate-200/80 dark:border-slate-800/80 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md">
+    <div class="max-w-[1440px] mx-auto px-4 sm:px-6">
+      <div class="flex items-center justify-between h-16">
+        <!-- Brand Logo -->
+        <div class="flex items-center gap-3">
+          <button onclick="navigateTo('home')" class="flex items-center gap-2.5 text-left group focus:outline-none">
+            <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-600 to-cyan-500 flex items-center justify-center text-white shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <circle cx="9.5" cy="10.5" r="5.5"></circle>
+                <circle cx="14.5" cy="13.5" r="5.5"></circle>
+              </svg>
             </div>
-
-            <div class="control-group">
-                <label>Brightness <span id="brightnessVal">100%</span></label>
-                <input type="range" id="brightness" min="0" max="200" value="100" disabled>
+            <div>
+              <span class="font-extrabold text-lg tracking-tight bg-gradient-to-r from-indigo-600 to-cyan-600 dark:from-indigo-400 dark:to-cyan-400 bg-clip-text text-transparent">ImageFilterLab</span>
+              <span class="hidden sm:block text-[10px] font-medium uppercase tracking-wider text-slate-400">Multi-Layer Photo Studio</span>
             </div>
-
-            <div class="control-group">
-                <label>Contrast <span id="contrastVal">100%</span></label>
-                <input type="range" id="contrast" min="0" max="200" value="100" disabled>
-            </div>
-
-            <div class="control-group">
-                <label>Saturation <span id="saturationVal">100%</span></label>
-                <input type="range" id="saturation" min="0" max="200" value="100" disabled>
-            </div>
-
-            <div class="control-group">
-                <label>Blur <span id="blurVal">0px</span></label>
-                <input type="range" id="blur" min="0" max="20" value="0" disabled>
-            </div>
-
-            <div class="control-group">
-                <label>Grayscale <span id="grayscaleVal">0%</span></label>
-                <input type="range" id="grayscale" min="0" max="100" value="0" disabled>
-            </div>
-
-            <div class="actions">
-                <button class="btn" id="downloadBtn" style="flex:1;" disabled>Download Image</button>
-            </div>
+          </button>
         </div>
 
-        <!-- Workspace Preview -->
-        <div class="workspace">
-            <div class="placeholder-text" id="placeholder">
-                <h3>No image uploaded yet</h3>
-                <p>Choose an image from the left sidebar to start editing.</p>
+        <!-- Desktop Navigation Links -->
+        <nav class="hidden xl:flex items-center gap-1 text-xs font-semibold">
+          <button onclick="navigateTo('home')" class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition">Studio Home</button>
+
+          <!-- Studios Dropdown -->
+          <div class="relative group">
+            <button class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition flex items-center gap-1">
+              <span>Creative Studios</span>
+              <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div class="absolute left-0 mt-1 w-72 rounded-2xl bg-white dark:bg-slate-900 shadow-xl border border-slate-200 dark:border-slate-800 p-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 grid grid-cols-1 gap-0.5 z-50">
+              <button onclick="navigateTo('virtual-makeup-studio')" class="text-left px-3 py-2 rounded-xl text-xs font-medium hover:bg-indigo-50 dark:hover:bg-indigo-950/50 hover:text-indigo-600 dark:hover:text-indigo-400">💄 Virtual Makeup Studio</button>
+              <button onclick="navigateTo('online-beauty-retouching')" class="text-left px-3 py-2 rounded-xl text-xs font-medium hover:bg-indigo-50 dark:hover:bg-indigo-950/50 hover:text-indigo-600 dark:hover:text-indigo-400">✨ Online Beauty Retouching</button>
+              <button onclick="navigateTo('online-sticker-editor')" class="text-left px-3 py-2 rounded-xl text-xs font-medium hover:bg-indigo-50 dark:hover:bg-indigo-950/50 hover:text-indigo-600 dark:hover:text-indigo-400">🎨 Online Sticker Editor</button>
+              <button onclick="navigateTo('image-text-editor')" class="text-left px-3 py-2 rounded-xl text-xs font-medium hover:bg-indigo-50 dark:hover:bg-indigo-950/50 hover:text-indigo-600 dark:hover:text-indigo-400">✍️ Image Text &amp; Typography Editor</button>
+              <button onclick="navigateTo('photo-frame-editor')" class="text-left px-3 py-2 rounded-xl text-xs font-medium hover:bg-indigo-50 dark:hover:bg-indigo-950/50 hover:text-indigo-600 dark:hover:text-indigo-400">🖼️ Photo Frame &amp; Border Editor</button>
+              <button onclick="navigateTo('image-crop-resize-tool')" class="text-left px-3 py-2 rounded-xl text-xs font-medium hover:bg-indigo-50 dark:hover:bg-indigo-950/50 hover:text-indigo-600 dark:hover:text-indigo-400">✂️ Image Crop, Resize &amp; Compress</button>
             </div>
-            <canvas id="canvas" style="display:none;"></canvas>
+          </div>
+
+          <!-- Filter Tools Dropdown -->
+          <div class="relative group">
+            <button class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition flex items-center gap-1">
+              <span>Image Filters</span>
+              <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div class="absolute left-0 mt-1 w-72 rounded-2xl bg-white dark:bg-slate-900 shadow-xl border border-slate-200 dark:border-slate-800 p-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 grid grid-cols-1 gap-0.5 z-50">
+              <button onclick="navigateTo('ai-image-filter')" class="text-left px-3 py-2 rounded-xl text-xs font-medium hover:bg-indigo-50 dark:hover:bg-indigo-950/50 hover:text-indigo-600 dark:hover:text-indigo-400">AI Image Filter (Style Presets)</button>
+              <button onclick="navigateTo('black-and-white-image-filter')" class="text-left px-3 py-2 rounded-xl text-xs font-medium hover:bg-indigo-50 dark:hover:bg-indigo-950/50 hover:text-indigo-600 dark:hover:text-indigo-400">Black and White Image Filter</button>
+              <button onclick="navigateTo('negative-image-filter')" class="text-left px-3 py-2 rounded-xl text-xs font-medium hover:bg-indigo-50 dark:hover:bg-indigo-950/50 hover:text-indigo-600 dark:hover:text-indigo-400">Negative Image Filter</button>
+              <button onclick="navigateTo('vintage-image-filter')" class="text-left px-3 py-2 rounded-xl text-xs font-medium hover:bg-indigo-50 dark:hover:bg-indigo-950/50 hover:text-indigo-600 dark:hover:text-indigo-400">Vintage Image Filter</button>
+              <button onclick="navigateTo('vhs-image-filter')" class="text-left px-3 py-2 rounded-xl text-xs font-medium hover:bg-indigo-50 dark:hover:bg-indigo-950/50 hover:text-indigo-600 dark:hover:text-indigo-400">VHS Image Filter</button>
+              <button onclick="navigateTo('crt-image-filter')" class="text-left px-3 py-2 rounded-xl text-xs font-medium hover:bg-indigo-50 dark:hover:bg-indigo-950/50 hover:text-indigo-600 dark:hover:text-indigo-400">CRT Image Filter</button>
+              <button onclick="navigateTo('grainy-image-filter')" class="text-left px-3 py-2 rounded-xl text-xs font-medium hover:bg-indigo-50 dark:hover:bg-indigo-950/50 hover:text-indigo-600 dark:hover:text-indigo-400">Grainy &amp; Film Grain Filter</button>
+              <button onclick="navigateTo('colorblind-image-filter')" class="text-left px-3 py-2 rounded-xl text-xs font-medium hover:bg-indigo-50 dark:hover:bg-indigo-950/50 hover:text-indigo-600 dark:hover:text-indigo-400">Colorblind Simulation Filter</button>
+            </div>
+          </div>
+
+          <!-- Dev & Guides Dropdown -->
+          <div class="relative group">
+            <button class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition flex items-center gap-1">
+              <span>Dev &amp; Education</span>
+              <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div class="absolute left-0 mt-1 w-80 rounded-2xl bg-white dark:bg-slate-900 shadow-xl border border-slate-200 dark:border-slate-800 p-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 grid grid-cols-1 gap-0.5 z-50">
+              <button onclick="navigateTo('css-filter-generator')" class="text-left px-3 py-2 rounded-xl text-xs font-medium hover:bg-indigo-50 dark:hover:bg-indigo-950/50 hover:text-indigo-600 dark:hover:text-indigo-400">CSS Image Filter Generator</button>
+              <button onclick="navigateTo('convolution-operation-image-filter-example')" class="text-left px-3 py-2 rounded-xl text-xs font-medium hover:bg-indigo-50 dark:hover:bg-indigo-950/50 hover:text-indigo-600 dark:hover:text-indigo-400">Convolution Operation Image Filter Example</button>
+              <button onclick="navigateTo('flutter-image-filter')" class="text-left px-3 py-2 rounded-xl text-xs font-medium hover:bg-indigo-50 dark:hover:bg-indigo-950/50 hover:text-indigo-600 dark:hover:text-indigo-400">Flutter Image Filter Tutorial (ColorFiltered)</button>
+              <button onclick="navigateTo('chatgpt-image-filter-safety')" class="text-left px-3 py-2 rounded-xl text-xs font-medium hover:bg-indigo-50 dark:hover:bg-indigo-950/50 hover:text-indigo-600 dark:hover:text-indigo-400">ChatGPT Image Filter Safety Explained</button>
+              <button onclick="navigateTo('chatgpt-nsfw-image-filter-explained')" class="text-left px-3 py-2 rounded-xl text-xs font-medium hover:bg-indigo-50 dark:hover:bg-indigo-950/50 hover:text-indigo-600 dark:hover:text-indigo-400">ChatGPT NSFW Image Filter Safety &amp; Alternatives</button>
+            </div>
+          </div>
+
+          <button onclick="navigateTo('seo-architecture')" class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition text-indigo-600 dark:text-indigo-400">31 SEO Pages &amp; Deploy</button>
+        </nav>
+
+        <!-- Right Controls -->
+        <div class="flex items-center gap-2">
+          <span class="hidden md:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60" title="All canvas layers are processed 100% locally in your browser">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            100% Local &amp; Private
+          </span>
+
+          <label for="file-input-main" class="cursor-pointer inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+            <span>Upload Image</span>
+          </label>
+          <input id="file-input-main" type="file" accept="image/jpeg,image/png,image/webp" class="hidden" />
+
+          <button id="theme-toggle" aria-label="Toggle dark mode" class="p-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+            <svg class="w-5 h-5 hidden dark:block text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+            <svg class="w-5 h-5 block dark:hidden text-slate-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+          </button>
+
+          <button id="mobile-menu-btn" class="xl:hidden p-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+          </button>
         </div>
+      </div>
     </div>
 
-    <script>
-        const upload = document.getElementById('upload');
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
-        const placeholder = document.getElementById('placeholder');
-        const resetBtn = document.getElementById('resetBtn');
-        const downloadBtn = document.getElementById('downloadBtn');
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobile-menu" class="hidden xl:hidden border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-4 space-y-3 max-h-[80vh] overflow-y-auto">
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs font-medium">
+        <button onclick="navigateTo('home'); toggleMobileMenu()" class="p-2.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-300 text-left font-bold">🏠 Studio Home</button>
+        <button onclick="navigateTo('virtual-makeup-studio'); toggleMobileMenu()" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-left">💄 Virtual Makeup</button>
+        <button onclick="navigateTo('online-beauty-retouching'); toggleMobileMenu()" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-left">✨ Beauty Retouch</button>
+        <button onclick="navigateTo('online-sticker-editor'); toggleMobileMenu()" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-left">🎨 Sticker Studio</button>
+        <button onclick="navigateTo('image-text-editor'); toggleMobileMenu()" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-left">✍️ Text Editor</button>
+        <button onclick="navigateTo('photo-frame-editor'); toggleMobileMenu()" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-left">🖼️ Photo Frames</button>
+        <button onclick="navigateTo('ai-image-filter'); toggleMobileMenu()" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-left">🤖 AI Style Presets</button>
+        <button onclick="navigateTo('black-and-white-image-filter'); toggleMobileMenu()" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-left">⬛ Black &amp; White</button>
+        <button onclick="navigateTo('vhs-image-filter'); toggleMobileMenu()" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-left">📼 VHS &amp; CRT</button>
+        <button onclick="navigateTo('css-filter-generator'); toggleMobileMenu()" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-left">💻 CSS Generator</button>
+        <button onclick="navigateTo('flutter-image-filter'); toggleMobileMenu()" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-left">📱 Flutter Guide</button>
+        <button onclick="navigateTo('seo-architecture'); toggleMobileMenu()" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-left font-bold">🗂️ All 31 SEO Pages</button>
+      </div>
+    </div>
+  </header>
 
-        const brightness = document.getElementById('brightness');
-        const contrast = document.getElementById('contrast');
-        const saturation = document.getElementById('saturation');
-        const blur = document.getElementById('blur');
-        const grayscale = document.getElementById('grayscale');
+  <!-- Breadcrumb Bar -->
+  <div id="breadcrumb-bar" class="hidden bg-slate-100/80 dark:bg-slate-900/60 border-b border-slate-200 dark:border-slate-800">
+    <div class="max-w-[1440px] mx-auto px-4 sm:px-6 py-2 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-600 dark:text-slate-400">
+      <nav aria-label="Breadcrumb" class="flex items-center gap-1.5">
+        <button onclick="navigateTo('home')" class="hover:text-indigo-600 dark:hover:text-indigo-400 font-medium">Home</button>
+        <span>/</span>
+        <span id="breadcrumb-current" class="font-semibold text-slate-900 dark:text-slate-200">Image Filter Editor</span>
+      </nav>
+      <span id="seo-target-badge" class="px-2.5 py-0.5 rounded-full bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 font-mono text-[11px]">Primary Keyword: image filter</span>
+    </div>
+  </div>
 
-        const brightnessVal = document.getElementById('brightnessVal');
-        const contrastVal = document.getElementById('contrastVal');
-        const saturationVal = document.getElementById('saturationVal');
-        const blurVal = document.getElementById('blurVal');
-        const grayscaleVal = document.getElementById('grayscaleVal');
+  <!-- Compact Hero Header -->
+  <section id="hero-section" class="border-b border-slate-200 dark:border-slate-800 bg-gradient-to-r from-indigo-50/80 via-white to-cyan-50/60 dark:from-indigo-950/30 dark:via-slate-950 dark:to-cyan-950/20">
+    <div class="max-w-[1440px] mx-auto px-4 sm:px-6 py-6 sm:py-7 flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+      <div class="max-w-3xl">
+        <h1 id="page-h1" class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
+          Free Online Image Filter and Photo Editing Studio
+        </h1>
+        <p id="page-subtitle" class="mt-2 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+          Non-destructive multi-layer photo editor with AI-style presets, Virtual Makeup Studio, Beauty Retouching, Stickers, Custom Typography, Frames, Crop/Resize, and CSS Filter Generator—100% private in your browser.
+        </p>
+      </div>
+      <div class="flex flex-wrap items-center gap-2.5 shrink-0">
+        <label for="file-input-main" class="cursor-pointer inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-500/20 transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+          <span>Upload Photo</span>
+        </label>
+        <button onclick="loadSampleImage('portrait')" class="px-3.5 py-2.5 rounded-xl text-xs font-semibold bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-indigo-400 transition">
+          Portrait Demo (Makeup/Retouch)
+        </button>
+        <button onclick="loadSampleImage('landscape')" class="px-3.5 py-2.5 rounded-xl text-xs font-semibold bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-indigo-400 transition">
+          Landscape Demo
+        </button>
+      </div>
+    </div>
+  </section>
 
-        let img = new Image();
-        let fileLoaded = false;
+  <!-- ========================================================================= -->
+  <!-- PROFESSIONAL 3-COLUMN DESKTOP + MOBILE-FIRST PHOTO EDITING WORKSPACE       -->
+  <!-- ========================================================================= -->
+  <main id="editor-workspace" class="max-w-[1440px] mx-auto px-3 sm:px-6 py-5">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
 
-        upload.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    img.src = event.target.result;
-                    img.onload = function() {
-                        canvas.width = img.width;
-                        canvas.height = img.height;
-                        ctx.drawImage(img, 0, 0);
-                        canvas.style.display = 'block';
-                        placeholder.style.display = 'none';
-                        resetBtn.style.display = 'block';
-                        downloadBtn.disabled = false;
+      <!-- LEFT SIDEBAR: 8 Studio Tools Rail -->
+      <aside aria-label="Studio Tool Selector" class="lg:col-span-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-1.5 shadow-sm flex lg:flex-col gap-1 overflow-x-auto">
+        <button onclick="selectStudioTool('filters')" id="rail-filters" class="studio-rail-btn flex-1 lg:flex-none flex flex-col items-center justify-center py-2.5 px-2 rounded-xl bg-indigo-600 text-white text-[10px] font-bold gap-1 transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/></svg>
+          <span>Filters</span>
+        </button>
+        <button onclick="selectStudioTool('adjust')" id="rail-adjust" class="studio-rail-btn flex-1 lg:flex-none flex flex-col items-center justify-center py-2.5 px-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 text-[10px] font-bold gap-1 transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg>
+          <span>Adjust</span>
+        </button>
+        <button onclick="selectStudioTool('makeup')" id="rail-makeup" class="studio-rail-btn flex-1 lg:flex-none flex flex-col items-center justify-center py-2.5 px-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 text-[10px] font-bold gap-1 transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2C8 2 5 5.5 5 10c0 5.25 7 12 7 12s7-6.75 7-12c0-4.5-3-8-7-8z"/><circle cx="12" cy="10" r="2.5"/></svg>
+          <span>Makeup</span>
+        </button>
+        <button onclick="selectStudioTool('retouch')" id="rail-retouch" class="studio-rail-btn flex-1 lg:flex-none flex flex-col items-center justify-center py-2.5 px-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 text-[10px] font-bold gap-1 transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 3l1.9 5.8L20 10.7l-5 3.6 1.9 5.7L12 16.5 7.1 20l1.9-5.7-5-3.6 6.1-1.9L12 3z"/></svg>
+          <span>Retouch</span>
+        </button>
+        <button onclick="selectStudioTool('stickers')" id="rail-stickers" class="studio-rail-btn flex-1 lg:flex-none flex flex-col items-center justify-center py-2.5 px-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 text-[10px] font-bold gap-1 transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></svg>
+          <span>Stickers</span>
+        </button>
+        <button onclick="selectStudioTool('text')" id="rail-text" class="studio-rail-btn flex-1 lg:flex-none flex flex-col items-center justify-center py-2.5 px-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 text-[10px] font-bold gap-1 transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg>
+          <span>Text</span>
+        </button>
+        <button onclick="selectStudioTool('frames')" id="rail-frames" class="studio-rail-btn flex-1 lg:flex-none flex flex-col items-center justify-center py-2.5 px-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 text-[10px] font-bold gap-1 transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><rect x="7" y="7" width="10" height="10" rx="1"/></svg>
+          <span>Frames</span>
+        </button>
+        <button onclick="selectStudioTool('crop')" id="rail-crop" class="studio-rail-btn flex-1 lg:flex-none flex flex-col items-center justify-center py-2.5 px-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 text-[10px] font-bold gap-1 transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 2v14a2 2 0 002 2h14M18 22V8a2 2 0 00-2-2H2"/></svg>
+          <span>Crop</span>
+        </button>
+      </aside>
 
-                        // Enable sliders
-                        brightness.disabled = false;
-                        contrast.disabled = false;
-                        saturation.disabled = false;
-                        blur.disabled = false;
-                        grayscale.disabled = false;
+      <!-- CENTER VIEWPORT: Canvas, Interactive Overlays & Bottom Toolbar -->
+      <div class="lg:col-span-7 space-y-3">
+        <!-- Top Viewport Bar -->
+        <div class="flex flex-wrap items-center justify-between gap-2 p-2.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+          <div class="flex items-center gap-1.5">
+            <button id="btn-toggle-compare" onclick="toggleCompareMode()" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-indigo-50 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 flex items-center gap-1.5 transition">
+              <span id="compare-btn-label">Compare Slider: ON</span>
+            </button>
+            <button onmousedown="showOriginalHold(true)" onmouseup="showOriginalHold(false)" onmouseleave="showOriginalHold(false)" ontouchstart="showOriginalHold(true)" ontouchend="showOriginalHold(false)" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 select-none transition">
+              Hold Original
+            </button>
+          </div>
 
-                        fileLoaded = true;
-                        applyFilters();
-                    }
-                }
-                reader.readAsDataURL(file);
-            }
+          <div id="canvas-mode-hint" class="hidden sm:block text-[11px] font-medium text-slate-500 dark:text-slate-400">
+            Drag stickers/text or adjust sliders on the right
+          </div>
+
+          <div class="flex items-center gap-1">
+            <button onclick="adjustZoom(-0.15)" class="px-2 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-bold" title="Zoom Out">−</button>
+            <span id="zoom-level-label" class="px-1.5 text-xs font-mono font-semibold">100%</span>
+            <button onclick="adjustZoom(0.15)" class="px-2 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-bold" title="Zoom In">+</button>
+            <button onclick="fitToScreen()" class="px-2 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-[11px] font-semibold" title="Fit to Screen">Fit</button>
+            <button onclick="toggleFullscreenPreview()" class="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700" title="Fullscreen Preview">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Main Interactive Canvas Dropzone -->
+        <div id="canvas-dropzone" class="relative rounded-2xl border-2 border-dashed border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 checkerboard-bg overflow-hidden min-h-[360px] sm:min-h-[480px] flex items-center justify-center shadow-inner">
+          <div id="drag-overlay" class="hidden absolute inset-0 z-30 bg-indigo-600/90 backdrop-blur-sm text-white flex flex-col items-center justify-center p-6 text-center">
+            <p class="text-lg font-bold">Drop your JPG, PNG, or WebP photo here</p>
+            <p class="text-xs text-indigo-100 mt-1">Processed 100% locally in your browser RAM</p>
+          </div>
+
+          <div id="canvas-viewport" class="relative flex items-center justify-center overflow-auto max-w-full max-h-[70vh] p-3">
+            <div id="canvas-stage" class="relative inline-block shadow-xl rounded-lg overflow-hidden select-none" style="transform-origin: center center;">
+              <canvas id="filtered-canvas" class="block max-w-full h-auto cursor-crosshair"></canvas>
+              <div id="makeup-landmarks-overlay" class="hidden absolute inset-0 pointer-events-none z-20"></div>
+              <div id="original-clip-wrapper" class="absolute inset-0 overflow-hidden pointer-events-none z-10" style="width: 50%;">
+                <canvas id="original-canvas" class="block max-w-none h-full"></canvas>
+                <span class="absolute top-3 left-3 px-2 py-0.5 rounded bg-black/70 text-white text-[10px] font-bold uppercase tracking-wider">Original</span>
+              </div>
+              <div id="compare-divider" class="compare-handle absolute top-0 bottom-0 w-0.5 bg-white shadow-[0_0_8px_rgba(0,0,0,0.85)] cursor-ew-resize z-20" style="left: 50%;">
+                <div class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-white text-slate-900 shadow-lg border border-slate-300 flex items-center justify-center">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 9l-3 3 3 3m8-6l3 3-3 3"/></svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BOTTOM TOOLBAR -->
+        <div class="p-3.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div class="flex flex-wrap items-center gap-1.5">
+            <button id="btn-undo" onclick="undoAction()" disabled class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 disabled:opacity-40 disabled:pointer-events-none transition">↶ Undo</button>
+            <button id="btn-redo" onclick="redoAction()" disabled class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 disabled:opacity-40 disabled:pointer-events-none transition">↷ Redo</button>
+            <button onclick="resetAllStudio()" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-rose-100 hover:text-rose-700 dark:hover:bg-rose-950/60 dark:hover:text-rose-300 transition">Reset All</button>
+            <span id="image-meta-badge" class="ml-1 text-[11px] font-mono text-slate-500 dark:text-slate-400">960×600 px • Demo PNG</span>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2">
+            <select id="export-format" aria-label="Export Format" class="px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+              <option value="image/png">PNG</option>
+              <option value="image/jpeg">JPEG</option>
+              <option value="image/webp">WebP</option>
+            </select>
+            <div class="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 px-2.5 py-1 rounded-xl border border-slate-200 dark:border-slate-700">
+              <span class="text-[11px] text-slate-500">Q:</span>
+              <input id="export-quality" type="range" min="10" max="100" value="92" class="w-14" />
+              <span id="export-quality-val" class="text-[11px] font-mono font-bold w-7">92%</span>
+            </div>
+            <button onclick="downloadCompositeImage()" class="px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm transition">
+              ⬇ Download Final Image
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT SIDEBAR: Active Studio Controls & Layer Manager -->
+      <aside class="lg:col-span-4 space-y-4">
+        <div class="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+          <div class="px-4 py-3 border-b border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-950/60 flex items-center justify-between">
+            <h2 id="right-panel-title" class="text-xs font-extrabold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">Filters &amp; AI Style Presets</h2>
+            <span id="active-preset-tag" class="text-[11px] font-mono text-slate-500">Default</span>
+          </div>
+
+          <div class="p-4 max-h-[56vh] overflow-y-auto space-y-4">
+
+            <!-- TOOL PANEL 1: FILTERS -->
+            <div id="tool-panel-filters" class="studio-tool-panel space-y-4">
+              <div class="flex flex-wrap gap-1 border-b border-slate-200 dark:border-slate-800 pb-2 text-[11px] font-bold">
+                <button onclick="switchFilterSubTab('ai')" id="fsub-ai" class="fsub-btn px-2.5 py-1 rounded-lg bg-indigo-600 text-white">AI Style</button>
+                <button onclick="switchFilterSubTab('basic')" id="fsub-basic" class="fsub-btn px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800">Basic</button>
+                <button onclick="switchFilterSubTab('retro')" id="fsub-retro" class="fsub-btn px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800">Retro</button>
+                <button onclick="switchFilterSubTab('creative')" id="fsub-creative" class="fsub-btn px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800">Creative</button>
+                <button onclick="switchFilterSubTab('css')" id="fsub-css" class="fsub-btn px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800">CSS &amp; Matrix</button>
+              </div>
+
+              <!-- Subtab: AI Style -->
+              <div id="fpanel-ai" class="fsub-panel space-y-3">
+                <p class="text-[11px] p-2.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-800/50 text-amber-800 dark:text-amber-200">
+                  <strong>Browser-Based Presets:</strong> Deterministic multi-stage artistic color &amp; contrast algorithms. Zero server uploads.
+                </p>
+                <div class="grid grid-cols-2 gap-2">
+                  <button onclick="applyFilterPreset('ai-image-filter')" class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-indigo-500 text-left text-xs font-bold">AI Image Filter</button>
+                  <button onclick="applyFilterPreset('ai-vintage')" class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-indigo-500 text-left text-xs font-bold">AI Vintage Style</button>
+                  <button onclick="applyFilterPreset('ai-cinematic')" class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-indigo-500 text-left text-xs font-bold">AI Cinematic Style</button>
+                  <button onclick="applyFilterPreset('ai-portrait')" class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-indigo-500 text-left text-xs font-bold">AI Portrait Style</button>
+                  <button onclick="applyFilterPreset('ai-beauty')" class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-indigo-500 text-left text-xs font-bold">AI Beauty Style</button>
+                  <button onclick="applyFilterPreset('ai-artistic')" class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-indigo-500 text-left text-xs font-bold">AI Artistic Style</button>
+                  <button onclick="applyFilterPreset('ai-retro')" class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-indigo-500 text-left text-xs font-bold">AI Retro Style</button>
+                  <button onclick="applyFilterPreset('ai-color-enhance')" class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-indigo-500 text-left text-xs font-bold">AI Color Enhancement</button>
+                </div>
+              </div>
+
+              <!-- Subtab: Basic -->
+              <div id="fpanel-basic" class="fsub-panel hidden space-y-3">
+                <div class="grid grid-cols-3 gap-1.5">
+                  <button onclick="applyFilterPreset('bw')" class="p-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-indigo-500 text-xs font-semibold">Black &amp; White</button>
+                  <button onclick="applyFilterPreset('grayscale')" class="p-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-indigo-500 text-xs font-semibold">Grayscale</button>
+                  <button onclick="applyFilterPreset('sepia')" class="p-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-indigo-500 text-xs font-semibold">Sepia</button>
+                  <button onclick="applyFilterPreset('negative')" class="p-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-indigo-500 text-xs font-semibold">Negative</button>
+                  <button onclick="applyFilterPreset('vintage')" class="p-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-indigo-500 text-xs font-semibold">Vintage</button>
+                  <button onclick="applyFilterPreset('invert')" class="p-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-indigo-500 text-xs font-semibold">Invert</button>
+                </div>
+                <div id="basic-sliders-mount" class="space-y-2.5 pt-2 border-t border-slate-200 dark:border-slate-800"></div>
+              </div>
+
+              <!-- Subtab: Retro -->
+              <div id="fpanel-retro" class="fsub-panel hidden space-y-3">
+                <div class="grid grid-cols-2 gap-2">
+                  <button onclick="applyFilterPreset('vhs')" class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-indigo-500 text-left text-xs font-bold">VHS Image Filter</button>
+                  <button onclick="applyFilterPreset('crt')" class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-indigo-500 text-left text-xs font-bold">CRT Image Filter</button>
+                  <button onclick="applyFilterPreset('grainy')" class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-indigo-500 text-left text-xs font-bold">Grainy Image Filter</button>
+                  <button onclick="applyFilterPreset('grain')" class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-indigo-500 text-left text-xs font-bold">Grain Image Filter</button>
+                  <button onclick="applyFilterPreset('retro-tv')" class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-indigo-500 text-left text-xs font-bold">Retro TV Effect</button>
+                  <button onclick="applyFilterPreset('glitch')" class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-indigo-500 text-left text-xs font-bold">Glitch Effect</button>
+                </div>
+              </div>
+
+              <!-- Subtab: Creative -->
+              <div id="fpanel-creative" class="fsub-panel hidden space-y-3">
+                <div class="space-y-1.5">
+                  <label class="text-xs font-bold block">Colorblindness Simulation Filter</label>
+                  <select id="colorblind-select" onchange="updateFilterField('colorblind', this.value)" class="w-full px-3 py-2 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                    <option value="none">Normal Vision (Off)</option>
+                    <option value="protanopia">Protanopia (Red-Blind)</option>
+                    <option value="deuteranopia">Deuteranopia (Green-Blind)</option>
+                    <option value="tritanopia">Tritanopia (Blue-Blind)</option>
+                    <option value="achromatopsia">Achromatopsia (Monochrome)</option>
+                  </select>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                  <button onclick="applyFilterPreset('duotone')" class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-indigo-500 text-left text-xs font-bold">Indigo/Cyan Duotone</button>
+                  <button onclick="applyFilterPreset('pixelate')" class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-indigo-500 text-left text-xs font-bold">8-Bit Pixelate</button>
+                </div>
+              </div>
+
+              <!-- Subtab: CSS & Matrix -->
+              <div id="fpanel-css" class="fsub-panel hidden space-y-3">
+                <div>
+                  <span class="text-xs font-bold block mb-1.5">3×3 Convolution Operation Matrix</span>
+                  <div class="grid grid-cols-4 gap-1.5">
+                    <button onclick="updateFilterField('kernel', 'none')" class="p-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-[11px] font-semibold">None</button>
+                    <button onclick="updateFilterField('kernel', 'sharpen')" class="p-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-[11px] font-semibold">Sharpen</button>
+                    <button onclick="updateFilterField('kernel', 'edge')" class="p-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-[11px] font-semibold">Edge</button>
+                    <button onclick="updateFilterField('kernel', 'emboss')" class="p-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-[11px] font-semibold">Emboss</button>
+                  </div>
+                </div>
+                <div class="space-y-1.5">
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold">Live CSS Filter Code</span>
+                    <button onclick="copyCssCode()" class="px-2.5 py-1 rounded-lg bg-indigo-600 text-white text-[11px] font-semibold">Copy CSS</button>
+                  </div>
+                  <pre id="css-code-output" class="p-3 rounded-xl bg-slate-900 text-cyan-300 font-mono text-[11px] overflow-x-auto">filter: none;</pre>
+                </div>
+              </div>
+            </div>
+
+            <!-- TOOL PANEL 2: ADJUST -->
+            <div id="tool-panel-adjust" class="studio-tool-panel hidden space-y-3">
+              <p class="text-[11px] text-slate-500">Fine-tune tonal exposure, highlights, shadows, color temperature, vignette, and sharpness.</p>
+              <div id="advanced-sliders-mount" class="space-y-2.5"></div>
+            </div>
+
+            <!-- TOOL PANEL 3: MAKEUP -->
+            <div id="tool-panel-makeup" class="studio-tool-panel hidden space-y-4">
+              <div class="p-2.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/50 border border-indigo-200/80 dark:border-indigo-800/60 text-[11px] text-indigo-900 dark:text-indigo-200 flex items-center justify-between gap-2">
+                <span><strong>Manual Landmark Pins:</strong> Drag the glowing pins on the photo to align Lips, Eyes, and Cheeks accurately.</span>
+                <label class="inline-flex items-center gap-1 shrink-0 font-bold cursor-pointer">
+                  <input id="toggle-landmark-pins" type="checkbox" checked onchange="toggleLandmarkPins(this.checked)" />
+                  <span>Pins</span>
+                </label>
+              </div>
+
+              <div class="space-y-2 border-b border-slate-200 dark:border-slate-800 pb-3">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold">💄 Lipstick Shade &amp; Intensity</span>
+                  <button onclick="resetMakeupFeature('lipstick')" class="text-[11px] text-rose-500 hover:underline">Remove</button>
+                </div>
+                <div class="flex flex-wrap items-center gap-1.5">
+                  <button onclick="setMakeupColor('lipstick', '#c81d25')" class="w-6 h-6 rounded-full bg-[#c81d25] border-2 border-white shadow" title="Classic Red"></button>
+                  <button onclick="setMakeupColor('lipstick', '#e05780')" class="w-6 h-6 rounded-full bg-[#e05780] border-2 border-white shadow" title="Rose Pink"></button>
+                  <button onclick="setMakeupColor('lipstick', '#b57b6b')" class="w-6 h-6 rounded-full bg-[#b57b6b] border-2 border-white shadow" title="Warm Nude"></button>
+                  <button onclick="setMakeupColor('lipstick', '#e85d4a')" class="w-6 h-6 rounded-full bg-[#e85d4a] border-2 border-white shadow" title="Coral"></button>
+                  <button onclick="setMakeupColor('lipstick', '#8f2d56')" class="w-6 h-6 rounded-full bg-[#8f2d56] border-2 border-white shadow" title="Berry"></button>
+                  <button onclick="setMakeupColor('lipstick', '#5e1124')" class="w-6 h-6 rounded-full bg-[#5e1124] border-2 border-white shadow" title="Deep Wine"></button>
+                  <input type="color" id="mk-lipstick-color" value="#c81d25" oninput="setMakeupColor('lipstick', this.value)" class="w-7 h-7 rounded cursor-pointer border-0 bg-transparent" title="Custom Lipstick Color" />
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="text-[11px] w-16">Opacity:</span>
+                  <input id="mk-lipstick-opacity" type="range" min="0" max="100" value="0" oninput="updateMakeupProp('lipstickOpacity', this.value)" class="flex-1" />
+                  <span id="val-mk-lipstick" class="text-[11px] font-mono w-8">0%</span>
+                </div>
+              </div>
+
+              <div class="space-y-2 border-b border-slate-200 dark:border-slate-800 pb-3">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold">🌸 Cheek Blush &amp; Softness</span>
+                  <button onclick="resetMakeupFeature('blush')" class="text-[11px] text-rose-500 hover:underline">Remove</button>
+                </div>
+                <div class="flex items-center gap-2">
+                  <button onclick="setMakeupColor('blush', '#f472b6')" class="px-2 py-1 rounded-lg bg-pink-100 dark:bg-pink-950 text-pink-700 dark:text-pink-300 text-[11px] font-semibold">Pink</button>
+                  <button onclick="setMakeupColor('blush', '#fb923c')" class="px-2 py-1 rounded-lg bg-orange-100 dark:bg-orange-950 text-orange-700 dark:text-orange-300 text-[11px] font-semibold">Peach</button>
+                  <button onclick="setMakeupColor('blush', '#e11d48')" class="px-2 py-1 rounded-lg bg-rose-100 dark:bg-rose-950 text-rose-700 dark:text-rose-300 text-[11px] font-semibold">Rose</button>
+                  <input type="color" id="mk-blush-color" value="#f472b6" oninput="setMakeupColor('blush', this.value)" class="w-6 h-6 rounded cursor-pointer bg-transparent" />
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="text-[11px] w-16">Intensity:</span>
+                  <input id="mk-blush-opacity" type="range" min="0" max="100" value="0" oninput="updateMakeupProp('blushOpacity', this.value)" class="flex-1" />
+                  <span id="val-mk-blush" class="text-[11px] font-mono w-8">0%</span>
+                </div>
+              </div>
+
+              <div class="space-y-2 border-b border-slate-200 dark:border-slate-800 pb-3">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold">👁️ Eyeshadow &amp; Eyeliner</span>
+                  <button onclick="resetMakeupFeature('eyes')" class="text-[11px] text-rose-500 hover:underline">Remove</button>
+                </div>
+                <div class="flex flex-wrap gap-1.5">
+                  <button onclick="applyEyePreset('natural')" class="px-2 py-1 rounded-lg border border-slate-200 dark:border-slate-700 text-[11px] font-semibold">Natural</button>
+                  <button onclick="applyEyePreset('smokey')" class="px-2 py-1 rounded-lg border border-slate-200 dark:border-slate-700 text-[11px] font-semibold">Smokey</button>
+                  <button onclick="applyEyePreset('glam')" class="px-2 py-1 rounded-lg border border-slate-200 dark:border-slate-700 text-[11px] font-semibold">Glam Gold</button>
+                  <input type="color" id="mk-shadow-color" value="#6d28d9" oninput="setMakeupColor('eyeshadow', this.value)" class="w-6 h-6 rounded cursor-pointer bg-transparent" />
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="text-[11px] w-16">Shadow:</span>
+                  <input id="mk-shadow-opacity" type="range" min="0" max="100" value="0" oninput="updateMakeupProp('eyeshadowOpacity', this.value)" class="flex-1" />
+                  <span id="val-mk-shadow" class="text-[11px] font-mono w-8">0%</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="text-[11px] w-16">Eyeliner:</span>
+                  <input id="mk-liner-opacity" type="range" min="0" max="100" value="0" oninput="updateMakeupProp('eyelinerOpacity', this.value)" class="flex-1" />
+                  <span id="val-mk-liner" class="text-[11px] font-mono w-8">0%</span>
+                </div>
+              </div>
+
+              <div class="space-y-2">
+                <span class="text-xs font-bold block">🖌️ Precision Makeup &amp; Eraser Brush</span>
+                <div class="flex items-center gap-2">
+                  <button id="btn-brush-paint" onclick="setBrushMode('makeup')" class="px-2.5 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-[11px] font-semibold">Paint Brush</button>
+                  <button id="btn-brush-erase" onclick="setBrushMode('erase')" class="px-2.5 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-[11px] font-semibold">Eraser</button>
+                  <button id="btn-brush-off" onclick="setBrushMode('none')" class="px-2.5 py-1.5 rounded-lg bg-indigo-600 text-white text-[11px] font-semibold">Pointer</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- TOOL PANEL 4: RETOUCH -->
+            <div id="tool-panel-retouch" class="studio-tool-panel hidden space-y-3">
+              <p class="text-[11px] text-slate-500">Subtle, natural portrait enhancements and manual blemish healing brush.</p>
+              <div class="space-y-2.5">
+                <div>
+                  <div class="flex justify-between text-xs font-medium mb-1"><span>Skin Smoothing</span><span id="val-ret-smooth" class="font-mono">0%</span></div>
+                  <input type="range" min="0" max="100" value="0" oninput="updateRetouchProp('smooth', this.value)" class="w-full" />
+                </div>
+                <div>
+                  <div class="flex justify-between text-xs font-medium mb-1"><span>Portrait Glow &amp; Soft Focus</span><span id="val-ret-glow" class="font-mono">0%</span></div>
+                  <input type="range" min="0" max="100" value="0" oninput="updateRetouchProp('glow', this.value)" class="w-full" />
+                </div>
+                <div>
+                  <div class="flex justify-between text-xs font-medium mb-1"><span>Face Brightness &amp; Lighting</span><span id="val-ret-bright" class="font-mono">0%</span></div>
+                  <input type="range" min="0" max="100" value="0" oninput="updateRetouchProp('faceLight', this.value)" class="w-full" />
+                </div>
+                <div>
+                  <div class="flex justify-between text-xs font-medium mb-1"><span>Teeth &amp; Eye Brightening</span><span id="val-ret-whiten" class="font-mono">0%</span></div>
+                  <input type="range" min="0" max="100" value="0" oninput="updateRetouchProp('whiten', this.value)" class="w-full" />
+                </div>
+                <div class="pt-2 border-t border-slate-200 dark:border-slate-800 space-y-2">
+                  <span class="text-xs font-bold block">🩹 Manual Blemish Softening Brush</span>
+                  <div class="flex items-center gap-2">
+                    <button id="btn-blemish-brush" onclick="setBrushMode(currentBrushMode === 'blemish' ? 'none' : 'blemish')" class="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs font-semibold">Toggle Blemish Brush</button>
+                    <input id="blemish-brush-size" type="range" min="6" max="45" value="18" class="flex-1" title="Brush Radius" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- TOOL PANEL 5: STICKERS -->
+            <div id="tool-panel-stickers" class="studio-tool-panel hidden space-y-3">
+              <div class="flex items-center justify-between gap-2">
+                <select id="sticker-category-select" onchange="renderStickerPalette(this.value)" class="flex-1 px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"></select>
+              </div>
+              <div id="sticker-palette-grid" class="grid grid-cols-5 gap-2 p-2 rounded-xl bg-slate-50 dark:bg-slate-800/60 max-h-40 overflow-y-auto"></div>
+
+              <div id="selected-sticker-controls" class="p-3 rounded-xl border border-slate-200 dark:border-slate-700 space-y-2 text-xs">
+                <div class="font-bold text-indigo-600 dark:text-indigo-400">Selected Sticker / Element Transform</div>
+                <div class="grid grid-cols-2 gap-2">
+                  <div>
+                    <label class="text-[11px] block">Scale</label>
+                    <input id="elem-scale" type="range" min="0.3" max="3" step="0.05" value="1" oninput="updateSelectedElement('scale', this.value)" class="w-full" />
+                  </div>
+                  <div>
+                    <label class="text-[11px] block">Rotate (°)</label>
+                    <input id="elem-rotate" type="range" min="-180" max="180" value="0" oninput="updateSelectedElement('rotation', this.value)" class="w-full" />
+                  </div>
+                  <div>
+                    <label class="text-[11px] block">Opacity</label>
+                    <input id="elem-opacity" type="range" min="10" max="100" value="100" oninput="updateSelectedElement('opacity', this.value)" class="w-full" />
+                  </div>
+                  <div class="flex items-end gap-1">
+                    <button onclick="flipSelectedElement('flipX')" class="flex-1 py-1 rounded bg-slate-100 dark:bg-slate-800 font-semibold">Flip H</button>
+                    <button onclick="flipSelectedElement('flipY')" class="flex-1 py-1 rounded bg-slate-100 dark:bg-slate-800 font-semibold">Flip V</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- TOOL PANEL 6: TEXT -->
+            <div id="tool-panel-text" class="studio-tool-panel hidden space-y-3">
+              <div class="flex gap-1.5">
+                <input id="new-text-input" type="text" value="Hello Summer ✨" placeholder="Enter custom text..." class="flex-1 px-3 py-1.5 rounded-xl text-xs bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700" />
+                <button onclick="addTextElement(false)" class="px-3 py-1.5 rounded-xl bg-indigo-600 text-white text-xs font-bold">+ Text</button>
+                <button onclick="addTextElement(true)" class="px-2.5 py-1.5 rounded-xl bg-cyan-600 text-white text-xs font-bold" title="Add Speech Bubble">💬</button>
+              </div>
+
+              <div class="flex flex-wrap gap-1">
+                <button onclick="quickAddCaption('Happy Birthday! 🎂')" class="px-2 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-[11px]">🎂 Birthday</button>
+                <button onclick="quickAddCaption('Love You Forever ❤️')" class="px-2 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-[11px]">❤️ Love</button>
+                <button onclick="quickAddCaption('NEW POST • SWIPE →')" class="px-2 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-[11px]">📱 Social</button>
+              </div>
+
+              <div class="grid grid-cols-2 gap-2 text-xs">
+                <div>
+                  <label class="text-[11px] block">Font Family</label>
+                  <select id="txt-font" onchange="updateSelectedText('fontFamily', this.value)" class="w-full px-2 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800">
+                    <option value="Inter, sans-serif">Inter Modern</option>
+                    <option value="'Playfair Display', serif">Playfair Editorial</option>
+                    <option value="'Oswald', sans-serif">Oswald Bold</option>
+                    <option value="'Pacifico', cursive">Pacifico Script</option>
+                    <option value="monospace">Monospace Code</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="text-[11px] block">Font Size</label>
+                  <input id="txt-size" type="range" min="16" max="110" value="42" oninput="updateSelectedText('fontSize', this.value)" class="w-full mt-2" />
+                </div>
+                <div class="flex items-center gap-2">
+                  <div>
+                    <label class="text-[11px] block">Fill</label>
+                    <input id="txt-color" type="color" value="#ffffff" oninput="updateSelectedText('color', this.value)" class="w-8 h-7 rounded cursor-pointer" />
+                  </div>
+                  <div>
+                    <label class="text-[11px] block">Outline</label>
+                    <input id="txt-stroke" type="color" value="#0f172a" oninput="updateSelectedText('strokeColor', this.value)" class="w-8 h-7 rounded cursor-pointer" />
+                  </div>
+                  <div>
+                    <label class="text-[11px] block">Shadow</label>
+                    <input id="txt-shadow" type="checkbox" checked onchange="updateSelectedText('shadow', this.checked)" class="mt-2" />
+                  </div>
+                </div>
+                <div class="flex items-end gap-1">
+                  <button onclick="toggleTextStyle('bold')" class="flex-1 py-1 rounded bg-slate-100 dark:bg-slate-800 font-bold">B</button>
+                  <button onclick="toggleTextStyle('italic')" class="flex-1 py-1 rounded bg-slate-100 dark:bg-slate-800 italic">I</button>
+                  <button onclick="toggleTextStyle('underline')" class="flex-1 py-1 rounded bg-slate-100 dark:bg-slate-800 underline">U</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- TOOL PANEL 7: FRAMES -->
+            <div id="tool-panel-frames" class="studio-tool-panel hidden space-y-3">
+              <div class="grid grid-cols-2 gap-1.5 text-xs font-semibold">
+                <button onclick="setPhotoFrame('none')" class="p-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-indigo-500">None</button>
+                <button onclick="setPhotoFrame('minimal')" class="p-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-indigo-500">Minimal Border</button>
+                <button onclick="setPhotoFrame('polaroid')" class="p-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-indigo-500">Polaroid Instant</button>
+                <button onclick="setPhotoFrame('film')" class="p-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-indigo-500">35mm Film Strip</button>
+                <button onclick="setPhotoFrame('vintage')" class="p-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-indigo-500">Vintage Gold</button>
+                <button onclick="setPhotoFrame('wedding')" class="p-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-indigo-500">Elegant Wedding</button>
+                <button onclick="setPhotoFrame('floral')" class="p-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-indigo-500">Floral Corner</button>
+                <button onclick="setPhotoFrame('love')" class="p-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-indigo-500">Love Hearts</button>
+                <button onclick="setPhotoFrame('birthday')" class="p-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-indigo-500">Birthday Confetti</button>
+                <button onclick="setPhotoFrame('social')" class="p-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-indigo-500">Social Story</button>
+              </div>
+              <div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-200 dark:border-slate-800 text-xs">
+                <div>
+                  <label class="text-[11px] block">Frame Thickness</label>
+                  <input id="frame-size" type="range" min="8" max="70" value="28" oninput="updateFrameProp('size', this.value)" class="w-full" />
+                </div>
+                <div>
+                  <label class="text-[11px] block">Frame Color</label>
+                  <input id="frame-color" type="color" value="#ffffff" oninput="updateFrameProp('color', this.value)" class="w-full h-7 rounded cursor-pointer" />
+                </div>
+              </div>
+            </div>
+
+            <!-- TOOL PANEL 8: CROP -->
+            <div id="tool-panel-crop" class="studio-tool-panel hidden space-y-3">
+              <div class="space-y-1.5">
+                <span class="text-xs font-bold block">Aspect Ratio Crop Presets</span>
+                <div class="grid grid-cols-4 gap-1.5 text-xs font-semibold">
+                  <button onclick="applyAspectCrop('free')" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-indigo-600 hover:text-white">Original</button>
+                  <button onclick="applyAspectCrop('1:1')" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-indigo-600 hover:text-white">1:1 Sq</button>
+                  <button onclick="applyAspectCrop('4:5')" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-indigo-600 hover:text-white">4:5 Port</button>
+                  <button onclick="applyAspectCrop('16:9')" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-indigo-600 hover:text-white">16:9 Land</button>
+                </div>
+              </div>
+
+              <div class="space-y-1.5 pt-2 border-t border-slate-200 dark:border-slate-800">
+                <span class="text-xs font-bold block">Orientation &amp; Mirror</span>
+                <div class="grid grid-cols-3 gap-1.5 text-xs font-semibold">
+                  <button onclick="transformBaseImage('rotate90')" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-indigo-600 hover:text-white">↻ 90°</button>
+                  <button onclick="transformBaseImage('flipH')" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-indigo-600 hover:text-white">⇄ Flip H</button>
+                  <button onclick="transformBaseImage('flipV')" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-indigo-600 hover:text-white">⇅ Flip V</button>
+                </div>
+              </div>
+
+              <div class="space-y-1.5 pt-2 border-t border-slate-200 dark:border-slate-800">
+                <span class="text-xs font-bold block">Custom Output Dimensions (px)</span>
+                <div class="flex items-center gap-2">
+                  <input id="resize-w" type="number" min="32" max="4096" value="960" class="w-24 px-2.5 py-1.5 rounded-xl text-xs bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700" />
+                  <span class="text-xs">×</span>
+                  <input id="resize-h" type="number" min="32" max="4096" value="600" class="w-24 px-2.5 py-1.5 rounded-xl text-xs bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700" />
+                  <button onclick="applyCustomResize()" class="px-3 py-1.5 rounded-xl bg-indigo-600 text-white text-xs font-bold">Resize</button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- LAYER MANAGER -->
+        <div class="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+          <div class="px-4 py-2.5 border-b border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-950/60 flex items-center justify-between">
+            <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-700 dark:text-slate-200">Non-Destructive Layers</h3>
+            <span id="layer-count-badge" class="text-[11px] font-mono text-slate-500">6 Layers</span>
+          </div>
+          <div id="layers-list-container" class="p-2.5 max-h-48 overflow-y-auto space-y-1.5 text-xs"></div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <!-- SEO LANDING PAGES CONTAINER -->
+  <section id="seo-content-wrapper" class="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-12"></section>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 mt-14">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-12">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
+        <div class="lg:col-span-2 space-y-3">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-600 to-cyan-500 flex items-center justify-center text-white font-bold">I</div>
+            <span class="font-extrabold text-lg">ImageFilterLab</span>
+          </div>
+          <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed max-w-sm">
+            Free, fast, privacy-first online image filter editor, virtual makeup studio, beauty retoucher, sticker &amp; text designer, and CSS filter code generator. Zero server uploads.
+          </p>
+          <div class="flex flex-wrap gap-2 pt-1">
+            <button onclick="downloadDeploymentFile('sitemap.xml')" class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-indigo-100 text-[11px] font-mono font-semibold transition">Download sitemap.xml</button>
+            <button onclick="downloadDeploymentFile('robots.txt')" class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-indigo-100 text-[11px] font-mono font-semibold transition">Download robots.txt</button>
+            <button onclick="downloadDeploymentFile('README.md')" class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-indigo-100 text-[11px] font-mono font-semibold transition">Download README.md</button>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white mb-3">Studios &amp; Editors</h4>
+          <ul class="space-y-2 text-xs text-slate-600 dark:text-slate-400">
+            <li><button onclick="navigateTo('virtual-makeup-studio')" class="hover:text-indigo-600">Virtual Makeup Studio</button></li>
+            <li><button onclick="navigateTo('online-beauty-retouching')" class="hover:text-indigo-600">Online Beauty Retouching</button></li>
+            <li><button onclick="navigateTo('online-sticker-editor')" class="hover:text-indigo-600">Online Sticker Editor</button></li>
+            <li><button onclick="navigateTo('image-text-editor')" class="hover:text-indigo-600">Image Text Editor</button></li>
+            <li><button onclick="navigateTo('photo-frame-editor')" class="hover:text-indigo-600">Photo Frame Editor</button></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white mb-3">Filters &amp; Guides</h4>
+          <ul class="space-y-2 text-xs text-slate-600 dark:text-slate-400">
+            <li><button onclick="navigateTo('ai-image-filter')" class="hover:text-indigo-600">AI Image Filter</button></li>
+            <li><button onclick="navigateTo('black-and-white-image-filter')" class="hover:text-indigo-600">Black and White Filter</button></li>
+            <li><button onclick="navigateTo('vhs-image-filter')" class="hover:text-indigo-600">VHS &amp; CRT Image Filter</button></li>
+            <li><button onclick="navigateTo('css-filter-generator')" class="hover:text-indigo-600">CSS Filter Generator</button></li>
+            <li><button onclick="navigateTo('flutter-image-filter')" class="hover:text-indigo-600">Flutter Image Filter Guide</button></li>
+            <li><button onclick="navigateTo('chatgpt-image-filter-safety')" class="hover:text-indigo-600">ChatGPT Filter Safety Guide</button></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white mb-3">Company &amp; SEO Map</h4>
+          <ul class="space-y-2 text-xs text-slate-600 dark:text-slate-400">
+            <li><button onclick="navigateTo('about-us')" class="hover:text-indigo-600">About Us</button></li>
+            <li><button onclick="navigateTo('contact-us')" class="hover:text-indigo-600">Contact Us</button></li>
+            <li><button onclick="navigateTo('privacy-policy')" class="hover:text-indigo-600">Privacy Policy</button></li>
+            <li><button onclick="navigateTo('terms-and-conditions')" class="hover:text-indigo-600">Terms &amp; Conditions</button></li>
+            <li><button onclick="navigateTo('disclaimer')" class="hover:text-indigo-600">Disclaimer</button></li>
+            <li><button onclick="navigateTo('seo-architecture')" class="hover:text-indigo-600 font-bold text-indigo-600 dark:text-indigo-400">All 31 SEO Pages Map</button></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mt-10 pt-6 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+        <p>© 2026 ImageFilterLab. All rights reserved. 100% Client-Side HTML5 Canvas Studio.</p>
+        <p>Shared Hosting cPanel Ready • Zero Server Uploads • No External APIs</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Fullscreen Modal -->
+  <div id="fullscreen-modal" class="hidden fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-md flex flex-col">
+    <div class="flex items-center justify-between px-6 py-4 border-b border-slate-800 text-white">
+      <span class="font-bold text-sm">Fullscreen Composite Preview</span>
+      <button onclick="toggleFullscreenPreview()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold">Close (ESC)</button>
+    </div>
+    <div class="flex-1 flex items-center justify-center p-6 overflow-auto">
+      <img id="fullscreen-img" alt="Fullscreen preview" class="max-w-full max-h-full rounded-lg shadow-2xl" />
+    </div>
+  </div>
+
+  <script>
+    const createDefaultStudioState = () => ({
+      activeTool: 'filters',
+      layerVisibility: { base: true, filter: true, makeup: true, retouch: true, frame: true },
+      layerLocked: { base: false, filter: false, makeup: false, retouch: false, frame: false },
+      filter: {
+        presetName: 'Default',
+        brightness: 100, contrast: 100, saturate: 100, grayscale: 0, sepia: 0, invert: 0, hueRotate: 0, blur: 0, opacity: 100,
+        exposure: 0, highlights: 0, shadows: 0, temperature: 0, tint: 0, vignette: 0, fade: 0, rgbSplit: 0, grain: 0, scanlines: 0,
+        pixelate: 1, duotone: false, glitchSlice: false, colorblind: 'none', kernel: 'none'
+      },
+      makeup: {
+        lipstickColor: '#c81d25', lipstickOpacity: 0, blushColor: '#f472b6', blushOpacity: 0, eyeshadowColor: '#6d28d9', eyeshadowOpacity: 0, eyelinerOpacity: 0,
+        landmarks: { leftEye: { x: 0.42, y: 0.40 }, rightEye: { x: 0.58, y: 0.40 }, leftCheek: { x: 0.37, y: 0.50 }, rightCheek: { x: 0.63, y: 0.50 }, mouth: { x: 0.50, y: 0.57 } }
+      },
+      retouch: { smooth: 0, glow: 0, faceLight: 0, whiten: 0 },
+      frame: { style: 'none', size: 28, color: '#ffffff' },
+      elements: [],
+      selectedElementId: null
+    });
+
+    let studio = createDefaultStudioState();
+    let undoStack = [];
+    let redoStack = [];
+    let baseImage = new Image();
+    let originalUploadedImage = new Image();
+    let currentFileInfo = 'Demo PNG';
+    let makeupPaintCanvas = document.createElement('canvas');
+    let blemishSpots = [];
+    let currentBrushMode = 'none';
+    let zoomLevel = 1;
+    let compareEnabled = true;
+    let splitPercent = 50;
+    let isDraggingSplit = false;
+    let draggingElementId = null;
+    let draggingLandmarkKey = null;
+    let dragOffset = { x: 0, y: 0 };
+
+    const CONVOLUTION_KERNELS = {
+      none: { name: 'Identity', matrix: [0, 0, 0, 0, 1, 0, 0, 0, 0], divisor: 1, offset: 0 },
+      sharpen: { name: 'Sharpen', matrix: [0, -1, 0, -1, 5, -1, 0, -1, 0], divisor: 1, offset: 0 },
+      edge: { name: 'Edge Detection', matrix: [-1, -1, -1, -1, 8, -1, -1, -1, -1], divisor: 1, offset: 0 },
+      emboss: { name: 'Emboss', matrix: [-2, -1, 0, -1, 1, 1, 0, 1, 2], divisor: 1, offset: 128 }
+    };
+
+    const COLORBLIND_MATRICES = {
+      protanopia: [0.567, 0.433, 0, 0.558, 0.442, 0, 0, 0.242, 0.758],
+      deuteranopia: [0.625, 0.375, 0, 0.7, 0.3, 0, 0, 0.3, 0.7],
+      tritanopia: [0.95, 0.05, 0, 0, 0.433, 0.567, 0, 0.475, 0.525],
+      achromatopsia: [0.299, 0.587, 0.114, 0.299, 0.587, 0.114, 0.299, 0.587, 0.114]
+    };
+
+    const STICKER_CATEGORIES = {
+      '1. Hearts': ['❤️', '💖', '💘', '💝', '💕', '💓', '💗', '🧡', '💛', '💜'],
+      '2. Flowers': ['🌸', '🌹', '🌺', '🌻', '🌼', '🌷', '💐', '🪷', '🪻', '🌿'],
+      '3. Stars': ['⭐', '🌟', '✨', '💫', '🌠', '⚡', '🔥', '💥', '☀️', '🌙'],
+      '4. Butterflies': ['🦋', '🧚', '🕊️', '🐝', '🐞', '🌈', '🫧', '🍃', '🪶', '🎐'],
+      '5. Emojis': ['😍', '🥳', '😎', '🤩', '🥰', '😘', '🤗', '😇', '😜', '🫶'],
+      '6. Sunglasses': ['🕶️', '👓', '🥽', '🤓', '🧐', '🎭', '🎩', '🧢', '👒', '🧣'],
+      '7. Crowns': ['👑', '👸', '🤴', '💎', '🏆', '🥇', '🎖️', '🪄', '🔮', '⚜️'],
+      '8. Birthday': ['🎂', '🎈', '🎉', '🎊', '🎁', '🕯️', '🧁', '🥂', '🥳', '🍰'],
+      '9. Love': ['💌', '💍', '💑', '🌹', '🧸', '🍫', '💋', '💞', '🥂', '🕊️'],
+      '10. Funny': ['🤪', '🤡', '👻', '👽', '🤖', '🦄', '🦖', '🍕', '🍩', '🚀'],
+      '11. Fashion': ['💄', '👠', '👜', '👗', '💍', '💅', '👒', '🕶️', '💎', '🪞'],
+      '12. Decorative': ['🎀', '🎗️', '🎐', '🪩', '🏮', '🖼️', '🎨', '🧵', '🪴', '🕯️'],
+      '13. Animals': ['🐱', '🐶', '🐰', '🦊', '🐼', '🐨', '🦁', '🦄', '🐧', '🐬'],
+      '14. Nature': ['🌴', '🌊', '⛰️', '🌅', '🌵', '🍁', '❄️', '☁️', '🌈', '🌻'],
+      '15. Social Media': ['📸', '❤️‍🔥', '👍', '🔥', '💯', '✅', '📢', '🎬', '🎵', '📍']
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      initTheme();
+      mountSliderControls();
+      initStickerCategories();
+      setupCanvasInteractions();
+      setupFileAndDragEvents();
+      setupBeforeAfterSlider();
+      loadSampleImage('portrait');
+      renderSeoPage('home');
+    });
+
+    function initTheme() {
+      const saved = localStorage.getItem('ifl-theme');
+      if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      }
+      document.getElementById('theme-toggle').addEventListener('click', () => {
+        document.documentElement.classList.toggle('dark');
+        localStorage.setItem('ifl-theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+      });
+    }
+
+    function toggleMobileMenu() { document.getElementById('mobile-menu').classList.toggle('hidden'); }
+    document.getElementById('mobile-menu-btn').addEventListener('click', toggleMobileMenu);
+
+    function showToast(msg) {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = 'px-4 py-2.5 rounded-xl bg-slate-900 dark:bg-indigo-600 text-white text-xs font-semibold shadow-lg animate-fade-in';
+      toast.textContent = msg;
+      container.appendChild(toast);
+      setTimeout(() => toast.remove(), 2600);
+    }
+
+    function loadSampleImage(type = 'portrait') {
+      const temp = document.createElement('canvas');
+      temp.width = 960; temp.height = 600;
+      const ctx = temp.getContext('2d');
+      if (type === 'portrait') {
+        const bg = ctx.createRadialGradient(480, 260, 50, 480, 300, 540);
+        bg.addColorStop(0, '#e0e7ff'); bg.addColorStop(0.55, '#818cf8'); bg.addColorStop(1, '#1e1b4b');
+        ctx.fillStyle = bg; ctx.fillRect(0, 0, 960, 600);
+        ctx.fillStyle = '#1e293b'; ctx.beginPath(); ctx.ellipse(480, 540, 195, 145, 0, Math.PI, 0); ctx.fill();
+        ctx.fillStyle = '#eab696'; ctx.fillRect(442, 360, 76, 85);
+        ctx.fillStyle = '#291d18'; ctx.beginPath(); ctx.ellipse(480, 255, 138, 165, 0, 0, Math.PI * 2); ctx.fill();
+        const skinGrad = ctx.createRadialGradient(480, 255, 20, 480, 265, 125);
+        skinGrad.addColorStop(0, '#f7cbb0'); skinGrad.addColorStop(1, '#e2a382');
+        ctx.fillStyle = skinGrad; ctx.beginPath(); ctx.ellipse(480, 268, 102, 128, 0, 0, Math.PI * 2); ctx.fill();
+        ctx.strokeStyle = '#3b2820'; ctx.lineWidth = 5; ctx.lineCap = 'round';
+        ctx.beginPath(); ctx.moveTo(395, 224); ctx.quadraticCurveTo(422, 214, 448, 222); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(512, 222); ctx.quadraticCurveTo(538, 214, 565, 224); ctx.stroke();
+        [422, 538].forEach(ex => {
+          ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.ellipse(ex, 242, 21, 11, 0, 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = '#3b2f2f'; ctx.beginPath(); ctx.arc(ex, 242, 8.5, 0, Math.PI * 2); ctx.fill();
         });
+        ctx.fillStyle = '#c97b74';
+        ctx.beginPath(); ctx.moveTo(446, 342); ctx.quadraticCurveTo(465, 331, 480, 336); ctx.quadraticCurveTo(495, 331, 514, 342); ctx.quadraticCurveTo(480, 360, 446, 342); ctx.fill();
+        studio.makeup.landmarks = {
+          leftEye: { x: 422 / 960, y: 242 / 600 }, rightEye: { x: 538 / 960, y: 242 / 600 },
+          leftCheek: { x: 398 / 960, y: 295 / 600 }, rightCheek: { x: 562 / 960, y: 295 / 600 }, mouth: { x: 480 / 960, y: 342 / 600 }
+        };
+      } else {
+        const sky = ctx.createLinearGradient(0, 0, 0, 380);
+        sky.addColorStop(0, '#1e1b4b'); sky.addColorStop(0.5, '#be185d'); sky.addColorStop(0.85, '#f97316'); sky.addColorStop(1, '#fde047');
+        ctx.fillStyle = sky; ctx.fillRect(0, 0, 960, 380);
+        ctx.fillStyle = '#fef08a'; ctx.beginPath(); ctx.arc(680, 220, 65, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#311042'; ctx.beginPath(); ctx.moveTo(0, 380); ctx.lineTo(220, 195); ctx.lineTo(450, 340); ctx.lineTo(660, 180); ctx.lineTo(960, 330); ctx.lineTo(960, 380); ctx.fill();
+        const lake = ctx.createLinearGradient(0, 380, 0, 600);
+        lake.addColorStop(0, '#f97316'); lake.addColorStop(1, '#090d16');
+        ctx.fillStyle = lake; ctx.fillRect(0, 380, 960, 220);
+      }
+      const img = new Image();
+      img.onload = () => {
+        baseImage = img; originalUploadedImage = img; currentFileInfo = `Demo (${type})`;
+        resetPaintLayers(img.width, img.height); updateImageMetadataBadge(); renderLandmarkPins(); renderCompositeCanvas();
+      };
+      img.src = temp.toDataURL('image/png');
+    }
 
-        function applyFilters() {
-            if (!fileLoaded) return;
+    function resetPaintLayers(w, h) {
+      makeupPaintCanvas.width = w; makeupPaintCanvas.height = h;
+      makeupPaintCanvas.getContext('2d').clearRect(0, 0, w, h); blemishSpots = [];
+    }
 
-            const b = brightness.value;
-            const c = contrast.value;
-            const s = saturation.value;
-            const bl = blur.value;
-            const g = grayscale.value;
+    function updateImageMetadataBadge() {
+      document.getElementById('image-meta-badge').textContent = `${baseImage.width}×${baseImage.height} px • ${currentFileInfo}`;
+      document.getElementById('resize-w').value = baseImage.width; document.getElementById('resize-h').value = baseImage.height;
+    }
 
-            brightnessVal.innerText = b + '%';
-            contrastVal.innerText = c + '%';
-            saturationVal.innerText = s + '%';
-            blurVal.innerText = bl + 'px';
-            grayscaleVal.innerText = g + '%';
+    function mountSliderControls() {
+      const basicDefs = [
+        { key: 'brightness', label: 'Brightness', min: 0, max: 200, unit: '%', def: 100 },
+        { key: 'contrast', label: 'Contrast', min: 0, max: 200, unit: '%', def: 100 },
+        { key: 'saturate', label: 'Saturation', min: 0, max: 250, unit: '%', def: 100 },
+        { key: 'hueRotate', label: 'Hue Rotation', min: 0, max: 360, unit: 'deg', def: 0 },
+        { key: 'blur', label: 'Blur', min: 0, max: 20, unit: 'px', def: 0 },
+        { key: 'opacity', label: 'Opacity', min: 10, max: 100, unit: '%', def: 100 }
+      ];
+      document.getElementById('basic-sliders-mount').innerHTML = basicDefs.map(s => `
+        <div>
+          <div class="flex justify-between text-[11px] font-medium mb-0.5">
+            <span>${s.label}</span><span id="val-f-${s.key}" class="font-mono">${s.def}${s.unit}</span>
+          </div>
+          <input id="ctrl-f-${s.key}" type="range" min="${s.min}" max="${s.max}" value="${s.def}" class="w-full" oninput="updateFilterField('${s.key}', Number(this.value))" />
+        </div>
+      `).join('');
 
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.filter = `brightness(${b}%) contrast(${c}%) saturate(${s}%) blur(${bl}px) grayscale(${g}%)`;
-            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      const advDefs = [
+        { key: 'exposure', label: 'Exposure', min: -50, max: 50, unit: '', def: 0 },
+        { key: 'highlights', label: 'Highlights', min: -50, max: 50, unit: '', def: 0 },
+        { key: 'shadows', label: 'Shadows', min: -50, max: 50, unit: '', def: 0 },
+        { key: 'temperature', label: 'Temperature', min: -50, max: 50, unit: '', def: 0 },
+        { key: 'tint', label: 'Tint', min: -50, max: 50, unit: '', def: 0 },
+        { key: 'vignette', label: 'Vignette', min: 0, max: 100, unit: '%', def: 0 },
+        { key: 'fade', label: 'Matte Fade', min: 0, max: 60, unit: '%', def: 0 },
+        { key: 'rgbSplit', label: 'RGB Split', min: 0, max: 25, unit: 'px', def: 0 },
+        { key: 'grain', label: 'Film Grain', min: 0, max: 100, unit: '', def: 0 },
+        { key: 'pixelate', label: 'Pixelate Block', min: 1, max: 30, unit: 'px', def: 1 }
+      ];
+      document.getElementById('advanced-sliders-mount').innerHTML = advDefs.map(s => `
+        <div>
+          <div class="flex justify-between text-[11px] font-medium mb-0.5">
+            <span>${s.label}</span><span id="val-f-${s.key}" class="font-mono">${s.def}${s.unit}</span>
+          </div>
+          <input id="ctrl-f-${s.key}" type="range" min="${s.min}" max="${s.max}" value="${s.def}" class="w-full" oninput="updateFilterField('${s.key}', Number(this.value))" />
+        </div>
+      `).join('');
+    }
+
+    function initStickerCategories() {
+      const select = document.getElementById('sticker-category-select');
+      const keys = Object.keys(STICKER_CATEGORIES);
+      select.innerHTML = keys.map(k => `<option value="${k}">${k}</option>`).join('');
+      renderStickerPalette(keys[0]);
+    }
+
+    function renderStickerPalette(catKey) {
+      const items = STICKER_CATEGORIES[catKey] || [];
+      document.getElementById('sticker-palette-grid').innerHTML = items.map(emoji => `
+        <button onclick="addStickerElement('${emoji}')" class="h-10 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 hover:border-indigo-500 hover:scale-105 text-xl flex items-center justify-center transition">
+          ${emoji}
+        </button>
+      `).join('');
+    }
+
+    function selectStudioTool(toolKey) {
+      studio.activeTool = toolKey;
+      document.querySelectorAll('.studio-rail-btn').forEach(btn => {
+        btn.classList.remove('bg-indigo-600', 'text-white'); btn.classList.add('text-slate-600', 'dark:text-slate-300');
+      });
+      const activeRail = document.getElementById(`rail-${toolKey}`);
+      if (activeRail) { activeRail.classList.add('bg-indigo-600', 'text-white'); activeRail.classList.remove('text-slate-600', 'dark:text-slate-300'); }
+      document.querySelectorAll('.studio-tool-panel').forEach(p => p.classList.add('hidden'));
+      const panel = document.getElementById(`tool-panel-${toolKey}`);
+      if (panel) panel.classList.remove('hidden');
+
+      const titles = {
+        filters: 'Filters & AI Style Presets', adjust: 'Advanced Photo Adjustments', makeup: 'Virtual Makeup Studio',
+        retouch: 'Beauty Retouching Studio', stickers: 'Sticker Library (15 Categories)', text: 'Text & Typography Designer',
+        frames: 'Photo Frames & Borders', crop: 'Crop, Resize & Transform'
+      };
+      document.getElementById('right-panel-title').textContent = titles[toolKey] || 'Studio Tool';
+      const overlay = document.getElementById('makeup-landmarks-overlay');
+      if (toolKey === 'makeup' && document.getElementById('toggle-landmark-pins').checked) {
+        overlay.classList.remove('hidden'); renderLandmarkPins();
+      } else { overlay.classList.add('hidden'); }
+    }
+
+    function switchFilterSubTab(subKey) {
+      document.querySelectorAll('.fsub-btn').forEach(b => { b.classList.remove('bg-indigo-600', 'text-white'); b.classList.add('bg-slate-100', 'dark:bg-slate-800'); });
+      const active = document.getElementById(`fsub-${subKey}`);
+      if (active) { active.classList.add('bg-indigo-600', 'text-white'); active.classList.remove('bg-slate-100', 'dark:bg-slate-800'); }
+      document.querySelectorAll('.fsub-panel').forEach(p => p.classList.add('hidden'));
+      const panel = document.getElementById(`fpanel-${subKey}`);
+      if (panel) panel.classList.remove('hidden');
+    }
+
+    function recordHistorySnapshot() {
+      undoStack.push(JSON.stringify(studio));
+      if (undoStack.length > 30) undoStack.shift();
+      redoStack = []; updateUndoRedoButtons();
+    }
+
+    function undoAction() {
+      if (undoStack.length === 0) return;
+      redoStack.push(JSON.stringify(studio));
+      studio = JSON.parse(undoStack.pop());
+      updateUndoRedoButtons(); renderLandmarkPins(); renderCompositeCanvas(); showToast('Undo applied');
+    }
+
+    function redoAction() {
+      if (redoStack.length === 0) return;
+      undoStack.push(JSON.stringify(studio));
+      studio = JSON.parse(redoStack.pop());
+      updateUndoRedoButtons(); renderLandmarkPins(); renderCompositeCanvas(); showToast('Redo applied');
+    }
+
+    function updateUndoRedoButtons() {
+      document.getElementById('btn-undo').disabled = undoStack.length === 0;
+      document.getElementById('btn-redo').disabled = redoStack.length === 0;
+    }
+
+    function resetAllStudio() {
+      recordHistorySnapshot();
+      const preservedLandmarks = { ...studio.makeup.landmarks };
+      studio = createDefaultStudioState(); studio.makeup.landmarks = preservedLandmarks;
+      baseImage = originalUploadedImage; resetPaintLayers(baseImage.width, baseImage.height);
+      updateImageMetadataBadge(); renderCompositeCanvas(); showToast('Reset all edits to original image');
+    }
+
+    function updateFilterField(key, val) {
+      studio.filter[key] = val; studio.filter.presetName = 'Custom';
+      const valLabel = document.getElementById(`val-f-${key}`);
+      if (valLabel) valLabel.textContent = val;
+      renderCompositeCanvas();
+    }
+
+    function applyFilterPreset(presetId) {
+      recordHistorySnapshot();
+      const keptLandmarks = studio.makeup.landmarks;
+      studio.filter = createDefaultStudioState().filter; studio.makeup.landmarks = keptLandmarks;
+      const presets = {
+        'ai-image-filter': { presetName: 'AI Image Filter', contrast: 118, saturate: 120, brightness: 104, kernel: 'sharpen' },
+        'ai-vintage': { presetName: 'AI Vintage Style', sepia: 36, contrast: 112, temperature: 16, grain: 22, vignette: 32 },
+        'ai-cinematic': { presetName: 'AI Cinematic Style', contrast: 124, saturate: 112, temperature: -12, shadows: -10, vignette: 42 },
+        'ai-portrait': { presetName: 'AI Portrait Style', brightness: 105, contrast: 106, temperature: 12, vignette: 20 },
+        'ai-beauty': { presetName: 'AI Beauty Style', brightness: 107, saturate: 108, temperature: 10 },
+        'ai-artistic': { presetName: 'AI Artistic Style', saturate: 138, contrast: 116, hueRotate: 14 },
+        'ai-retro': { presetName: 'AI Retro Style', sepia: 25, contrast: 115, fade: 18, grain: 28 },
+        'ai-color-enhance': { presetName: 'AI Color Enhancement', saturate: 132, contrast: 116, exposure: 6 },
+        'bw': { presetName: 'Black & White', grayscale: 100, contrast: 120 },
+        'grayscale': { presetName: 'Grayscale', grayscale: 100 },
+        'sepia': { presetName: 'Sepia', sepia: 85 },
+        'negative': { presetName: 'Negative Invert', invert: 100 },
+        'invert': { presetName: 'Invert', invert: 100 },
+        'vintage': { presetName: 'Vintage Filter', sepia: 52, contrast: 95, fade: 15, grain: 22, vignette: 36 },
+        'vhs': { presetName: 'VHS Filter', contrast: 118, saturate: 135, rgbSplit: 7, scanlines: 35, grain: 30 },
+        'crt': { presetName: 'CRT Filter', contrast: 122, brightness: 108, rgbSplit: 4, scanlines: 65, vignette: 46 },
+        'grainy': { presetName: 'Grainy Filter', grayscale: 22, contrast: 115, grain: 65 },
+        'grain': { presetName: 'Film Grain', contrast: 105, grain: 32 },
+        'retro-tv': { presetName: 'Retro TV', saturate: 140, contrast: 120, scanlines: 45, rgbSplit: 5 },
+        'glitch': { presetName: 'Glitch Effect', contrast: 125, saturate: 145, rgbSplit: 14, glitchSlice: true },
+        'duotone': { presetName: 'Duotone', grayscale: 100, contrast: 124, duotone: true },
+        'pixelate': { presetName: 'Pixelate 8-Bit', pixelate: 10, saturate: 125 }
+      };
+      if (presets[presetId]) Object.assign(studio.filter, presets[presetId]);
+      if (presetId === 'ai-beauty') studio.retouch.smooth = 45;
+      document.getElementById('active-preset-tag').textContent = studio.filter.presetName;
+      renderCompositeCanvas(); showToast(`Applied ${studio.filter.presetName}`);
+    }
+
+    function setMakeupColor(part, hex) {
+      recordHistorySnapshot();
+      if (part === 'lipstick') {
+        studio.makeup.lipstickColor = hex;
+        if (studio.makeup.lipstickOpacity === 0) { studio.makeup.lipstickOpacity = 55; document.getElementById('mk-lipstick-opacity').value = 55; document.getElementById('val-mk-lipstick').textContent = '55%'; }
+      } else if (part === 'blush') {
+        studio.makeup.blushColor = hex;
+        if (studio.makeup.blushOpacity === 0) { studio.makeup.blushOpacity = 42; document.getElementById('mk-blush-opacity').value = 42; document.getElementById('val-mk-blush').textContent = '42%'; }
+      } else if (part === 'eyeshadow') {
+        studio.makeup.eyeshadowColor = hex;
+        if (studio.makeup.eyeshadowOpacity === 0) { studio.makeup.eyeshadowOpacity = 50; document.getElementById('mk-shadow-opacity').value = 50; document.getElementById('val-mk-shadow').textContent = '50%'; }
+      }
+      renderCompositeCanvas();
+    }
+
+    function updateMakeupProp(prop, val) {
+      studio.makeup[prop] = Number(val);
+      if (prop === 'lipstickOpacity') document.getElementById('val-mk-lipstick').textContent = `${val}%`;
+      if (prop === 'blushOpacity') document.getElementById('val-mk-blush').textContent = `${val}%`;
+      if (prop === 'eyeshadowOpacity') document.getElementById('val-mk-shadow').textContent = `${val}%`;
+      if (prop === 'eyelinerOpacity') document.getElementById('val-mk-liner').textContent = `${val}%`;
+      renderCompositeCanvas();
+    }
+
+    function applyEyePreset(style) {
+      recordHistorySnapshot();
+      if (style === 'natural') { studio.makeup.eyeshadowColor = '#b08968'; studio.makeup.eyeshadowOpacity = 40; studio.makeup.eyelinerOpacity = 35; }
+      if (style === 'smokey') { studio.makeup.eyeshadowColor = '#1e293b'; studio.makeup.eyeshadowOpacity = 68; studio.makeup.eyelinerOpacity = 75; }
+      if (style === 'glam') { studio.makeup.eyeshadowColor = '#d97706'; studio.makeup.eyeshadowOpacity = 60; studio.makeup.eyelinerOpacity = 65; }
+      document.getElementById('mk-shadow-opacity').value = studio.makeup.eyeshadowOpacity; document.getElementById('val-mk-shadow').textContent = `${studio.makeup.eyeshadowOpacity}%`;
+      document.getElementById('mk-liner-opacity').value = studio.makeup.eyelinerOpacity; document.getElementById('val-mk-liner').textContent = `${studio.makeup.eyelinerOpacity}%`;
+      renderCompositeCanvas();
+    }
+
+    function resetMakeupFeature(feature) {
+      recordHistorySnapshot();
+      if (feature === 'lipstick') { studio.makeup.lipstickOpacity = 0; document.getElementById('mk-lipstick-opacity').value = 0; document.getElementById('val-mk-lipstick').textContent = '0%'; }
+      if (feature === 'blush') { studio.makeup.blushOpacity = 0; document.getElementById('mk-blush-opacity').value = 0; document.getElementById('val-mk-blush').textContent = '0%'; }
+      if (feature === 'eyes') {
+        studio.makeup.eyeshadowOpacity = 0; studio.makeup.eyelinerOpacity = 0;
+        document.getElementById('mk-shadow-opacity').value = 0; document.getElementById('val-mk-shadow').textContent = '0%';
+        document.getElementById('mk-liner-opacity').value = 0; document.getElementById('val-mk-liner').textContent = '0%';
+      }
+      renderCompositeCanvas();
+    }
+
+    function toggleLandmarkPins(show) {
+      const overlay = document.getElementById('makeup-landmarks-overlay');
+      if (show && studio.activeTool === 'makeup') { overlay.classList.remove('hidden'); renderLandmarkPins(); }
+      else { overlay.classList.add('hidden'); }
+    }
+
+    function renderLandmarkPins() {
+      const overlay = document.getElementById('makeup-landmarks-overlay');
+      const labels = { leftEye: 'L-Eye', rightEye: 'R-Eye', leftCheek: 'L-Cheek', rightCheek: 'R-Cheek', mouth: 'Lips' };
+      overlay.innerHTML = Object.entries(studio.makeup.landmarks).map(([key, pt]) => `
+        <div onmousedown="startDragLandmark(event, '${key}')" ontouchstart="startDragLandmark(event, '${key}')"
+          style="left: ${pt.x * 100}%; top: ${pt.y * 100}%;"
+          class="pointer-events-auto absolute -translate-x-1/2 -translate-y-1/2 cursor-move group flex flex-col items-center">
+          <div class="w-4 h-4 rounded-full bg-rose-500 border-2 border-white shadow-md group-hover:scale-125 transition"></div>
+          <span class="mt-0.5 px-1.5 py-0.2 rounded bg-black/75 text-white text-[9px] font-bold whitespace-nowrap">${labels[key]}</span>
+        </div>
+      `).join('');
+    }
+
+    function startDragLandmark(e, key) { e.stopPropagation(); draggingLandmarkKey = key; }
+
+    function setBrushMode(mode) {
+      currentBrushMode = mode;
+      showToast(mode === 'none' ? 'Pointer mode active' : `Active brush: ${mode.toUpperCase()} (draw directly on photo)`);
+    }
+
+    function updateRetouchProp(key, val) {
+      studio.retouch[key] = Number(val);
+      const map = { smooth: 'val-ret-smooth', glow: 'val-ret-glow', faceLight: 'val-ret-bright', whiten: 'val-ret-whiten' };
+      if (map[key]) document.getElementById(map[key]).textContent = `${val}%`;
+      renderCompositeCanvas();
+    }
+
+    function addStickerElement(emoji) {
+      recordHistorySnapshot();
+      const id = 'el_' + Date.now() + '_' + Math.floor(Math.random() * 999);
+      studio.elements.push({ id, type: 'sticker', name: `Sticker ${emoji}`, content: emoji, x: 0.5, y: 0.5, scale: 1, rotation: 0, opacity: 100, flipX: false, flipY: false, visible: true, locked: false });
+      studio.selectedElementId = id; renderCompositeCanvas(); showToast(`Added sticker ${emoji}`);
+    }
+
+    function addTextElement(isSpeechBubble = false) {
+      const input = document.getElementById('new-text-input');
+      const text = (input.value || 'Custom Text').trim();
+      recordHistorySnapshot();
+      const id = 'el_' + Date.now() + '_' + Math.floor(Math.random() * 999);
+      studio.elements.push({
+        id, type: 'text', name: `Text: ${text.slice(0, 14)}`, content: text, isBubble: isSpeechBubble,
+        fontFamily: document.getElementById('txt-font').value, fontSize: Number(document.getElementById('txt-size').value),
+        color: document.getElementById('txt-color').value, strokeColor: document.getElementById('txt-stroke').value,
+        shadow: document.getElementById('txt-shadow').checked, bold: true, italic: false, underline: false,
+        x: 0.5, y: 0.35, scale: 1, rotation: 0, opacity: 100, flipX: false, flipY: false, visible: true, locked: false
+      });
+      studio.selectedElementId = id; renderCompositeCanvas(); showToast(isSpeechBubble ? 'Added speech bubble' : 'Added text layer');
+    }
+
+    function quickAddCaption(captionText) { document.getElementById('new-text-input').value = captionText; addTextElement(false); }
+
+    function updateSelectedElement(prop, val) {
+      const el = studio.elements.find(item => item.id === studio.selectedElementId);
+      if (!el || el.locked) return;
+      el[prop] = Number(val); renderCompositeCanvas();
+    }
+
+    function flipSelectedElement(axis) {
+      const el = studio.elements.find(item => item.id === studio.selectedElementId);
+      if (!el || el.locked) return;
+      recordHistorySnapshot(); el[axis] = !el[axis]; renderCompositeCanvas();
+    }
+
+    function updateSelectedText(prop, val) {
+      const el = studio.elements.find(item => item.id === studio.selectedElementId && item.type === 'text');
+      if (!el || el.locked) return;
+      el[prop] = prop === 'fontSize' ? Number(val) : val; renderCompositeCanvas();
+    }
+
+    function toggleTextStyle(flag) {
+      const el = studio.elements.find(item => item.id === studio.selectedElementId && item.type === 'text');
+      if (!el || el.locked) return;
+      recordHistorySnapshot(); el[flag] = !el[flag]; renderCompositeCanvas();
+    }
+
+    function setPhotoFrame(style) {
+      recordHistorySnapshot(); 
+      studio.frame.style = style; 
+      studio.layerVisibility.frame = true;
+      renderCompositeCanvas();
+      showToast(style === 'none' ? 'Removed photo frame' : `Applied ${style} frame`);
+    }
+
+    function updateFrameProp(prop, val) {
+      studio.frame[prop] = prop === 'size' ? Number(val) : val; 
+      studio.layerVisibility.frame = true;
+      renderCompositeCanvas();
+    }
+
+    function applyAspectCrop(ratioStr) {
+      if (ratioStr === 'free') { 
+        baseImage = originalUploadedImage; 
+        updateImageMetadataBadge(); 
+        renderCompositeCanvas(); 
+        showToast('Reset to original aspect ratio');
+        return; 
+      }
+      recordHistorySnapshot();
+      const [rw, rh] = ratioStr.split(':').map(Number); 
+      const targetRatio = rw / rh;
+      const srcW = baseImage.width; 
+      const srcH = baseImage.height;
+      let cropW = srcW; let cropH = srcH;
+      if (srcW / srcH > targetRatio) { cropW = Math.round(srcH * targetRatio); } 
+      else { cropH = Math.round(srcW / targetRatio); }
+      const sx = Math.floor((srcW - cropW) / 2); 
+      const sy = Math.floor((srcH - cropH) / 2);
+      const c = document.createElement('canvas'); c.width = cropW; c.height = cropH;
+      c.getContext('2d').drawImage(baseImage, sx, sy, cropW, cropH, 0, 0, cropW, cropH);
+      const img = new Image();
+      img.onload = () => { 
+        baseImage = img; 
+        updateImageMetadataBadge(); 
+        renderCompositeCanvas(); 
+        showToast(`Cropped to ${ratioStr}`); 
+      };
+      img.src = c.toDataURL('image/png');
+    }
+
+    function transformBaseImage(action) {
+      recordHistorySnapshot();
+      const c = document.createElement('canvas'); const ctx = c.getContext('2d');
+      if (action === 'rotate90') {
+        c.width = baseImage.height; c.height = baseImage.width;
+        ctx.translate(c.width / 2, c.height / 2); ctx.rotate(Math.PI / 2); ctx.drawImage(baseImage, -baseImage.width / 2, -baseImage.height / 2);
+      } else {
+        c.width = baseImage.width; c.height = baseImage.height;
+        ctx.translate(action === 'flipH' ? c.width : 0, action === 'flipV' ? c.height : 0);
+        ctx.scale(action === 'flipH' ? -1 : 1, action === 'flipV' ? -1 : 1); ctx.drawImage(baseImage, 0, 0);
+      }
+      const img = new Image();
+      img.onload = () => { baseImage = img; updateImageMetadataBadge(); renderCompositeCanvas(); };
+      img.src = c.toDataURL('image/png');
+    }
+
+    function applyCustomResize() {
+      const w = Math.max(32, Math.min(4096, Number(document.getElementById('resize-w').value) || baseImage.width));
+      const h = Math.max(32, Math.min(4096, Number(document.getElementById('resize-h').value) || baseImage.height));
+      recordHistorySnapshot();
+      const c = document.createElement('canvas'); c.width = w; c.height = h;
+      c.getContext('2d').drawImage(baseImage, 0, 0, w, h);
+      const img = new Image();
+      img.onload = () => { baseImage = img; updateImageMetadataBadge(); renderCompositeCanvas(); showToast(`Resized to ${w}×${h}px`); };
+      img.src = c.toDataURL('image/png');
+    }
+
+    function setupCanvasInteractions() {
+      const canvas = document.getElementById('filtered-canvas');
+      const getNormCoords = (clientX, clientY) => {
+        const rect = canvas.getBoundingClientRect();
+        return {
+          x: Math.max(0, Math.min(1, (clientX - rect.left) / rect.width)),
+          y: Math.max(0, Math.min(1, (clientY - rect.top) / rect.height))
+        };
+      };
+
+      const handlePointerDown = (clientX, clientY) => {
+        const pt = getNormCoords(clientX, clientY);
+        if (currentBrushMode === 'blemish') {
+          recordHistorySnapshot();
+          const radius = Number(document.getElementById('blemish-brush-size').value) / canvas.width;
+          blemishSpots.push({ x: pt.x, y: pt.y, r: radius });
+          renderCompositeCanvas(); return;
+        }
+        if (currentBrushMode === 'makeup' || currentBrushMode === 'erase') {
+          paintMakeupStroke(pt.x, pt.y, currentBrushMode === 'erase'); return;
+        }
+        for (let i = studio.elements.length - 1; i >= 0; i--) {
+          const el = studio.elements[i];
+          if (!el.visible || el.locked) continue;
+          if (Math.abs(pt.x - el.x) < 0.12 * el.scale && Math.abs(pt.y - el.y) < 0.1 * el.scale) {
+            studio.selectedElementId = el.id; draggingElementId = el.id;
+            dragOffset = { x: pt.x - el.x, y: pt.y - el.y };
+            renderCompositeCanvas(); return;
+          }
+        }
+      };
+
+      const handlePointerMove = (clientX, clientY) => {
+        const pt = getNormCoords(clientX, clientY);
+        if (draggingLandmarkKey) {
+          studio.makeup.landmarks[draggingLandmarkKey] = pt;
+          renderLandmarkPins(); renderCompositeCanvas(); return;
+        }
+        if (draggingElementId) {
+          const el = studio.elements.find(item => item.id === draggingElementId);
+          if (el) { el.x = Math.max(0.02, Math.min(0.98, pt.x - dragOffset.x)); el.y = Math.max(0.02, Math.min(0.98, pt.y - dragOffset.y)); renderCompositeCanvas(); }
+        }
+      };
+
+      const handlePointerUp = () => { draggingElementId = null; draggingLandmarkKey = null; };
+
+      canvas.addEventListener('mousedown', (e) => handlePointerDown(e.clientX, e.clientY));
+      window.addEventListener('mousemove', (e) => handlePointerMove(e.clientX, e.clientY));
+      window.addEventListener('mouseup', handlePointerUp);
+      canvas.addEventListener('touchstart', (e) => { if (e.touches[0]) handlePointerDown(e.touches[0].clientX, e.touches[0].clientY); }, { passive: true });
+      window.addEventListener('touchmove', (e) => { if (e.touches[0] && (draggingElementId || draggingLandmarkKey)) handlePointerMove(e.touches[0].clientX, e.touches[0].clientY); }, { passive: true });
+      window.addEventListener('touchend', handlePointerUp);
+    }
+
+    function paintMakeupStroke(xNorm, yNorm, erase = false) {
+      const ctx = makeupPaintCanvas.getContext('2d');
+      const x = xNorm * makeupPaintCanvas.width; const y = yNorm * makeupPaintCanvas.height;
+      ctx.save();
+      ctx.globalCompositeOperation = erase ? 'destination-out' : 'source-over';
+      const grad = ctx.createRadialGradient(x, y, 2, x, y, 22);
+      grad.addColorStop(0, erase ? 'rgba(0,0,0,1)' : studio.makeup.lipstickColor + '66');
+      grad.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(x, y, 22, 0, Math.PI * 2); ctx.fill();
+      ctx.restore(); renderCompositeCanvas();
+    }
+
+    function renderCompositeCanvas() {
+      if (!baseImage.width) return;
+      const w = baseImage.width; const h = baseImage.height;
+      const outCanvas = document.getElementById('filtered-canvas');
+      const origCanvas = document.getElementById('original-canvas');
+      outCanvas.width = w; outCanvas.height = h; origCanvas.width = w; origCanvas.height = h;
+      const outCtx = outCanvas.getContext('2d', { willReadFrequently: true });
+      const origCtx = origCanvas.getContext('2d');
+
+      origCtx.clearRect(0, 0, w, h); origCtx.drawImage(baseImage, 0, 0, w, h);
+      requestAnimationFrame(() => { origCanvas.style.width = `${outCanvas.getBoundingClientRect().width}px`; });
+
+      outCtx.clearRect(0, 0, w, h);
+      if (!studio.layerVisibility.base) { renderLayersList(); return; }
+
+      const f = studio.filter;
+      const effBright = Math.max(0, f.brightness + f.exposure * 0.8 + studio.retouch.faceLight * 0.25);
+      const effContrast = Math.max(0, f.contrast + f.highlights * 0.2 - f.shadows * 0.2 - f.fade * 0.4);
+      const cssParts = [];
+      if (studio.layerVisibility.filter) {
+        if (effBright !== 100) cssParts.push(`brightness(${effBright}%)`);
+        if (effContrast !== 100) cssParts.push(`contrast(${effContrast}%)`);
+        if (f.saturate !== 100) cssParts.push(`saturate(${f.saturate}%)`);
+        if (f.grayscale !== 0) cssParts.push(`grayscale(${f.grayscale}%)`);
+        if (f.sepia !== 0) cssParts.push(`sepia(${f.sepia}%)`);
+        if (f.invert !== 0) cssParts.push(`invert(${f.invert}%)`);
+        if (f.hueRotate !== 0) cssParts.push(`hue-rotate(${f.hueRotate}deg)`);
+        if (f.blur !== 0) cssParts.push(`blur(${f.blur}px)`);
+        if (f.opacity !== 100) cssParts.push(`opacity(${f.opacity}%)`);
+      }
+      const cssStr = cssParts.length ? cssParts.join(' ') : 'none';
+      document.getElementById('css-code-output').textContent = `.edited-photo {\n  filter: ${cssStr};\n  -webkit-filter: ${cssStr};\n}`;
+
+      outCtx.save();
+      outCtx.filter = cssStr;
+      if (studio.layerVisibility.filter && f.pixelate > 1) {
+        const sw = Math.max(1, Math.floor(w / f.pixelate)); const sh = Math.max(1, Math.floor(h / f.pixelate));
+        const pC = document.createElement('canvas'); pC.width = sw; pC.height = sh;
+        pC.getContext('2d').drawImage(baseImage, 0, 0, sw, sh);
+        outCtx.imageSmoothingEnabled = false; outCtx.drawImage(pC, 0, 0, sw, sh, 0, 0, w, h);
+      } else {
+        outCtx.drawImage(baseImage, 0, 0, w, h);
+      }
+      outCtx.restore();
+
+      if (studio.layerVisibility.filter) {
+        const needsPixels = f.kernel !== 'none' || f.colorblind !== 'none' || f.temperature !== 0 || f.tint !== 0 || f.grain > 0 || f.rgbSplit > 0 || f.duotone;
+        if (needsPixels) {
+          let imgData = outCtx.getImageData(0, 0, w, h);
+          if (f.kernel !== 'none') imgData = applyConvolutionMatrix(imgData, CONVOLUTION_KERNELS[f.kernel]);
+          const data = imgData.data; const copy = f.rgbSplit > 0 ? new Uint8ClampedArray(data) : null;
+          const splitOff = f.rgbSplit * 4; const cb = f.colorblind !== 'none' ? COLORBLIND_MATRICES[f.colorblind] : null; const grainAmp = f.grain * 1.3;
+          for (let i = 0; i < data.length; i += 4) {
+            let r = data[i], g = data[i + 1], b = data[i + 2];
+            if (copy) { r = copy[Math.min(data.length - 4, i + splitOff)]; b = copy[Math.max(0, i - splitOff + 2)]; }
+            if (f.temperature !== 0) { r += f.temperature * 0.7; b -= f.temperature * 0.7; }
+            if (f.tint !== 0) { g -= f.tint * 0.6; r += f.tint * 0.3; b += f.tint * 0.3; }
+            if (f.duotone) {
+              const lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+              r = 30 + lum * (6 - 30); g = 27 + lum * (182 - 27); b = 75 + lum * (212 - 75);
+            }
+            if (cb) {
+              const nr = r * cb[0] + g * cb[1] + b * cb[2];
+              const ng = r * cb[3] + g * cb[4] + b * cb[5];
+              const nb = r * cb[6] + g * cb[7] + b * cb[8];
+              r = nr; g = ng; b = nb;
+            }
+            if (grainAmp > 0) { const n = (Math.random() - 0.5) * grainAmp; r += n; g += n; b += n; }
+            data[i] = r; data[i + 1] = g; data[i + 2] = b;
+          }
+          outCtx.putImageData(imgData, 0, 0);
         }
 
-        [brightness, contrast, saturation, blur, grayscale].forEach(slider => {
-            slider.addEventListener('input', applyFilters);
-        });
+        if (f.glitchSlice) {
+          for (let s = 0; s < 10; s++) {
+            const sy = Math.floor(Math.random() * h); const sh = Math.floor(Math.random() * 16) + 4;
+            const dx = Math.floor((Math.random() - 0.5) * 40);
+            outCtx.drawImage(outCanvas, 0, sy, w, sh, dx, sy, w, sh);
+          }
+        }
+        if (f.scanlines > 0) {
+          outCtx.fillStyle = `rgba(0,0,0,${(f.scanlines / 100) * 0.55})`;
+          for (let y = 0; y < h; y += 4) outCtx.fillRect(0, y, w, 2);
+        }
+      }
 
-        resetBtn.addEventListener('click', () => {
-            brightness.value = 100;
-            contrast.value = 100;
-            saturation.value = 100;
-            blur.value = 0;
-            grayscale.value = 0;
-            applyFilters();
+      if (studio.layerVisibility.retouch) {
+        const ret = studio.retouch;
+        if (ret.smooth > 0 || ret.glow > 0) {
+          outCtx.save();
+          const blurPx = Math.max(2, (ret.smooth + ret.glow) * 0.12);
+          outCtx.filter = `blur(${blurPx}px) brightness(${100 + ret.whiten * 0.12}%)`;
+          outCtx.globalAlpha = Math.min(0.55, (ret.smooth * 0.45 + ret.glow * 0.35) / 100);
+          outCtx.globalCompositeOperation = ret.glow > ret.smooth ? 'screen' : 'normal';
+          outCtx.drawImage(outCanvas, 0, 0); outCtx.restore();
+        }
+        blemishSpots.forEach(spot => {
+          const sx = spot.x * w, sy = spot.y * h, sr = spot.r * w;
+          outCtx.save(); outCtx.beginPath(); outCtx.arc(sx, sy, sr, 0, Math.PI * 2); outCtx.clip();
+          outCtx.filter = 'blur(6px)'; outCtx.drawImage(outCanvas, 0, 0); outCtx.restore();
         });
+      }
 
-        downloadBtn.addEventListener('click', () => {
-            const link = document.createElement('a');
-            link.download = 'filtered-image.png';
-            link.href = canvas.toDataURL();
-            link.click();
+      if (studio.layerVisibility.makeup) {
+        const mk = studio.makeup; const lm = mk.landmarks;
+        if (mk.blushOpacity > 0) {
+          [lm.leftCheek, lm.rightCheek].forEach(c => {
+            const cx = c.x * w, cy = c.y * h, rad = w * 0.065;
+            outCtx.save(); outCtx.globalCompositeOperation = 'multiply'; outCtx.globalAlpha = (mk.blushOpacity / 100) * 0.55;
+            const g = outCtx.createRadialGradient(cx, cy, 2, cx, cy, rad);
+            g.addColorStop(0, mk.blushColor); g.addColorStop(1, 'rgba(255,255,255,0)');
+            outCtx.fillStyle = g; outCtx.beginPath(); outCtx.arc(cx, cy, rad, 0, Math.PI * 2); outCtx.fill();
+            outCtx.restore();
+          });
+        }
+        [lm.leftEye, lm.rightEye].forEach(eye => {
+          const ex = eye.x * w, ey = eye.y * h, ew = w * 0.032;
+          if (mk.eyeshadowOpacity > 0) {
+            outCtx.save(); outCtx.globalCompositeOperation = 'multiply'; outCtx.globalAlpha = (mk.eyeshadowOpacity / 100) * 0.65;
+            outCtx.filter = 'blur(4px)'; outCtx.fillStyle = mk.eyeshadowColor;
+            outCtx.beginPath(); outCtx.ellipse(ex, ey - ew * 0.35, ew, ew * 0.48, 0, Math.PI, 0); outCtx.fill();
+            outCtx.restore();
+          }
+          if (mk.eyelinerOpacity > 0) {
+            outCtx.save(); outCtx.globalAlpha = (mk.eyelinerOpacity / 100) * 0.85; outCtx.strokeStyle = '#0f172a';
+            outCtx.lineWidth = Math.max(2, w * 0.0035); outCtx.beginPath();
+            outCtx.moveTo(ex - ew * 0.9, ey); outCtx.quadraticCurveTo(ex, ey - ew * 0.45, ex + ew * 1.05, ey - ew * 0.12);
+            outCtx.stroke(); outCtx.restore();
+          }
         });
-    </script>
+        if (mk.lipstickOpacity > 0) {
+          const mx = lm.mouth.x * w, my = lm.mouth.y * h, mw = w * 0.042, mh = h * 0.022;
+          outCtx.save(); outCtx.globalCompositeOperation = 'multiply'; outCtx.globalAlpha = (mk.lipstickOpacity / 100) * 0.78;
+          outCtx.filter = 'blur(2.5px)'; outCtx.fillStyle = mk.lipstickColor;
+          outCtx.beginPath(); outCtx.moveTo(mx - mw, my);
+          outCtx.quadraticCurveTo(mx - mw * 0.4, my - mh * 1.1, mx, my - mh * 0.55);
+          outCtx.quadraticCurveTo(mx + mw * 0.4, my - mh * 1.1, mx + mw, my);
+          outCtx.quadraticCurveTo(mx, my + mh * 1.45, mx - mw, my); outCtx.fill();
+          outCtx.restore();
+        }
+        if (makeupPaintCanvas.width === w && makeupPaintCanvas.height === h) {
+          outCtx.drawImage(makeupPaintCanvas, 0, 0);
+        }
+      }
+
+      if (studio.layerVisibility.filter && f.vignette > 0) {
+        const g = outCtx.createRadialGradient(w / 2, h / 2, w * 0.22, w / 2, h / 2, Math.max(w, h) * 0.72);
+        g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, `rgba(0,0,0,${(f.vignette / 100) * 0.85})`);
+        outCtx.fillStyle = g; outCtx.fillRect(0, 0, w, h);
+      }
+
+      studio.elements.forEach(el => {
+        if (!el.visible) return;
+        const px = el.x * w; const py = el.y * h;
+        outCtx.save(); outCtx.translate(px, py); outCtx.rotate((el.rotation * Math.PI) / 180);
+        outCtx.scale(el.flipX ? -el.scale : el.scale, el.flipY ? -el.scale : el.scale);
+        outCtx.globalAlpha = el.opacity / 100;
+        if (el.type === 'sticker') {
+          const size = Math.round(w * 0.09); outCtx.font = `${size}px sans-serif`;
+          outCtx.textAlign = 'center'; outCtx.textBaseline = 'middle'; outCtx.fillText(el.content, 0, 0);
+        } else if (el.type === 'text') {
+          const stylePrefix = `${el.italic ? 'italic ' : ''}${el.bold ? 'bold ' : ''}`;
+          outCtx.font = `${stylePrefix}${el.fontSize}px ${el.fontFamily}`;
+          outCtx.textAlign = 'center'; outCtx.textBaseline = 'middle';
+          if (el.isBubble) {
+            const metrics = outCtx.measureText(el.content); const bw = metrics.width + 36; const bh = el.fontSize + 24;
+            outCtx.fillStyle = '#ffffff'; outCtx.strokeStyle = '#0f172a'; outCtx.lineWidth = 3;
+            outCtx.beginPath(); outCtx.roundRect(-bw / 2, -bh / 2, bw, bh, 16); outCtx.fill(); outCtx.stroke();
+          }
+          if (el.shadow) { outCtx.shadowColor = 'rgba(0,0,0,0.65)'; outCtx.shadowBlur = 8; outCtx.shadowOffsetY = 3; }
+          if (el.strokeColor && !el.isBubble) { outCtx.strokeStyle = el.strokeColor; outCtx.lineWidth = Math.max(2, el.fontSize * 0.08); outCtx.strokeText(el.content, 0, 0); }
+          outCtx.fillStyle = el.isBubble ? '#0f172a' : el.color; outCtx.fillText(el.content, 0, 0);
+        }
+        outCtx.restore();
+      });
+
+      if (studio.layerVisibility.frame && studio.frame.style !== 'none') {
+        renderPhotoFrame(outCtx, w, h, studio.frame);
+      }
+      renderLayersList();
+    }
+
+    function renderPhotoFrame(ctx, w, h, frame) {
+      const s = Number(frame.size) || 28; 
+      ctx.save();
+      if (frame.style === 'minimal' || frame.style === 'wedding' || frame.style === 'vintage') {
+        ctx.strokeStyle = frame.style === 'vintage' ? '#d97706' : frame.color; 
+        ctx.lineWidth = Math.max(4, s * 0.6); 
+        ctx.strokeRect(ctx.lineWidth / 2, ctx.lineWidth / 2, w - ctx.lineWidth, h - ctx.lineWidth);
+      } else if (frame.style === 'polaroid') {
+        ctx.fillStyle = frame.color; 
+        ctx.fillRect(0, 0, w, s); 
+        ctx.fillRect(0, 0, s, h); 
+        ctx.fillRect(w - s, 0, s, h); 
+        ctx.fillRect(0, h - s * 2.8, w, s * 2.8);
+      } else if (frame.style === 'film') {
+        ctx.fillStyle = '#090d16'; 
+        ctx.fillRect(0, 0, w, s * 1.4); 
+        ctx.fillRect(0, h - s * 1.4, w, s * 1.4);
+        ctx.fillStyle = '#ffffff';
+        for (let x = 16; x < w - 16; x += 36) { 
+          ctx.fillRect(x, s * 0.35, 18, s * 0.7); 
+          ctx.fillRect(x, h - s * 1.05, 18, s * 0.7); 
+        }
+      } else {
+        ctx.strokeStyle = frame.color; 
+        ctx.lineWidth = s; 
+        ctx.strokeRect(0, 0, w, h);
+      }
+      ctx.restore();
+    }
+
+    function applyConvolutionMatrix(imgData, kernelObj) {
+      const { matrix, divisor, offset } = kernelObj;
+      const w = imgData.width, h = imgData.height, src = imgData.data;
+      const output = new ImageData(w, h), dst = output.data;
+      for (let y = 0; y < h; y++) {
+        for (let x = 0; x < w; x++) {
+          let r = 0, g = 0, b = 0;
+          for (let ky = -1; ky <= 1; ky++) {
+            const py = Math.min(h - 1, Math.max(0, y + ky));
+            for (let kx = -1; kx <= 1; kx++) {
+              const px = Math.min(w - 1, Math.max(0, x + kx));
+              const weight = matrix[(ky + 1) * 3 + (kx + 1)];
+              const idx = (py * w + px) * 4;
+              r += src[idx] * weight; g += src[idx + 1] * weight; b += src[idx + 2] * weight;
+            }
+          }
+          const outIdx = (y * w + x) * 4;
+          dst[outIdx] = Math.min(255, Math.max(0, r / divisor + offset));
+          dst[outIdx + 1] = Math.min(255, Math.max(0, g / divisor + offset));
+          dst[outIdx + 2] = Math.min(255, Math.max(0, b / divisor + offset));
+          dst[outIdx + 3] = src[outIdx + 3];
+        }
+      }
+      return output;
+    }
+
+    function renderLayersList() {
+      const container = document.getElementById('layers-list-container');
+      const staticLayers = [
+        { key: 'frame', label: '🖼️ Photo Frame Layer' },
+        { key: 'makeup', label: '💄 Virtual Makeup Layer' },
+        { key: 'retouch', label: '✨ Beauty Retouch Layer' },
+        { key: 'filter', label: '🎨 Color & Filter Layer' },
+        { key: 'base', label: '📷 Base Image Layer' }
+      ];
+      const elementRows = [...studio.elements].reverse().map(el => `
+        <div onclick="studio.selectedElementId='${el.id}'; renderLayersList();" class="flex items-center justify-between px-2.5 py-1.5 rounded-xl border ${studio.selectedElementId === el.id ? 'border-indigo-500 bg-indigo-50/70 dark:bg-indigo-950/40' : 'border-slate-200 dark:border-slate-800'} cursor-pointer">
+          <span class="truncate font-semibold max-w-[140px]">${el.name}</span>
+          <div class="flex items-center gap-1">
+            <button onclick="event.stopPropagation(); toggleElementProp('${el.id}', 'visible')" class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800">${el.visible ? '👁️' : '🚫'}</button>
+            <button onclick="event.stopPropagation(); toggleElementProp('${el.id}', 'locked')" class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800">${el.locked ? '🔒' : '🔓'}</button>
+            <button onclick="event.stopPropagation(); deleteElement('${el.id}')" class="px-1.5 py-0.5 rounded bg-rose-100 text-rose-600">✕</button>
+          </div>
+        </div>
+      `).join('');
+      const staticRows = staticLayers.map(l => `
+        <div class="flex items-center justify-between px-2.5 py-1.5 rounded-xl bg-slate-50/80 dark:bg-slate-800/40 border border-slate-200/70 dark:border-slate-800">
+          <span class="font-medium">${l.label}</span>
+          <button onclick="toggleStaticLayer('${l.key}')" class="px-2 py-0.5 rounded bg-white dark:bg-slate-900 border border-slate-200 text-[11px]">${studio.layerVisibility[l.key] ? 'Visible' : 'Hidden'}</button>
+        </div>
+      `).join('');
+      document.getElementById('layer-count-badge').textContent = `${staticLayers.length + studio.elements.length} Layers`;
+      container.innerHTML = elementRows + staticRows;
+    }
+
+    function toggleStaticLayer(key) { studio.layerVisibility[key] = !studio.layerVisibility[key]; renderCompositeCanvas(); }
+    function toggleElementProp(id, prop) { const el = studio.elements.find(i => i.id === id); if (el) { el[prop] = !el[prop]; renderCompositeCanvas(); } }
+    function deleteElement(id) { recordHistorySnapshot(); studio.elements = studio.elements.filter(i => i.id !== id); renderCompositeCanvas(); }
+
+    function setupFileAndDragEvents() {
+      document.getElementById('file-input-main').addEventListener('change', (e) => {
+        if (e.target.files && e.target.files[0]) handleImageUpload(e.target.files[0]);
+      });
+      const dz = document.getElementById('canvas-dropzone');
+      const ov = document.getElementById('drag-overlay');
+      ['dragenter', 'dragover'].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); ov.classList.remove('hidden'); }));
+      ['dragleave', 'drop'].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); ov.classList.add('hidden'); }));
+      dz.addEventListener('drop', e => { if (e.dataTransfer.files[0]) handleImageUpload(e.dataTransfer.files[0]); });
+      document.getElementById('export-quality').addEventListener('input', e => {
+        document.getElementById('export-quality-val').textContent = `${e.target.value}%`;
+      });
+    }
+
+    function handleImageUpload(file) {
+      const allowed = ['image/jpeg', 'image/png', 'image/webp'];
+      if (!allowed.includes(file.type)) { showToast('Unsupported format.'); return; }
+      const url = URL.createObjectURL(file);
+      const img = new Image();
+      img.onload = () => {
+        URL.revokeObjectURL(url); baseImage = img; originalUploadedImage = img;
+        currentFileInfo = `${(file.size / 1024).toFixed(1)} KB`;
+        resetPaintLayers(img.width, img.height); updateImageMetadataBadge(); renderCompositeCanvas();
+        showToast(`Loaded ${file.name}`);
+      };
+      img.src = url;
+    }
+
+    function setupBeforeAfterSlider() {
+      const divider = document.getElementById('compare-divider');
+      const stage = document.getElementById('canvas-stage');
+      const updateSplit = (clientX) => {
+        if (!compareEnabled) return;
+        const rect = stage.getBoundingClientRect();
+        splitPercent = Math.max(0, Math.min(100, ((clientX - rect.left) / rect.width) * 100));
+        divider.style.left = `${splitPercent}%`;
+        document.getElementById('original-clip-wrapper').style.width = `${splitPercent}%`;
+      };
+      divider.addEventListener('mousedown', (e) => { e.stopPropagation(); isDraggingSplit = true; });
+      window.addEventListener('mouseup', () => { isDraggingSplit = false; });
+      window.addEventListener('mousemove', (e) => { if (isDraggingSplit) updateSplit(e.clientX); });
+    }
+
+    function toggleCompareMode() {
+      compareEnabled = !compareEnabled;
+      document.getElementById('original-clip-wrapper').classList.toggle('hidden', !compareEnabled);
+      document.getElementById('compare-divider').classList.toggle('hidden', !compareEnabled);
+      document.getElementById('compare-btn-label').textContent = `Compare Slider: ${compareEnabled ? 'ON' : 'OFF'}`;
+    }
+
+    function showOriginalHold(holding) {
+      const clip = document.getElementById('original-clip-wrapper');
+      const divider = document.getElementById('compare-divider');
+      if (holding) { clip.classList.remove('hidden'); clip.style.width = '100%'; divider.classList.add('hidden'); }
+      else if (compareEnabled) { clip.style.width = `${splitPercent}%`; divider.classList.remove('hidden'); }
+      else { clip.classList.add('hidden'); }
+    }
+
+    function adjustZoom(delta) {
+      zoomLevel = Math.max(0.4, Math.min(2.4, +(zoomLevel + delta).toFixed(2)));
+      document.getElementById('canvas-stage').style.transform = `scale(${zoomLevel})`;
+      document.getElementById('zoom-level-label').textContent = `${Math.round(zoomLevel * 100)}%`;
+    }
+
+    function fitToScreen() {
+      zoomLevel = 1; document.getElementById('canvas-stage').style.transform = 'scale(1)';
+      document.getElementById('zoom-level-label').textContent = '100%';
+    }
+
+    function toggleFullscreenPreview() {
+      const modal = document.getElementById('fullscreen-modal');
+      if (modal.classList.contains('hidden')) {
+        document.getElementById('fullscreen-img').src = document.getElementById('filtered-canvas').toDataURL('image/png');
+        modal.classList.remove('hidden');
+      } else { modal.classList.add('hidden'); }
+    }
+
+    function copyCssCode() {
+      const ta = document.createElement('textarea');
+      ta.value = document.getElementById('css-code-output').textContent;
+      document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+      showToast('Copied CSS filter code!');
+    }
+
+    function downloadCompositeImage() {
+      const canvas = document.getElementById('filtered-canvas');
+      const format = document.getElementById('export-format').value;
+      const quality = Number(document.getElementById('export-quality').value) / 100;
+      const ext = format.split('/')[1];
+      const link = document.createElement('a');
+      link.download = `imagefilterlab-edited-${Date.now()}.${ext}`;
+      link.href = canvas.toDataURL(format, quality); link.click();
+      showToast(`Exported final ${ext.toUpperCase()}!`);
+    }
+
+    const SEO_PAGES = [
+      { slug: 'home', title: 'Free Online Image Filter and Photo Editing Studio — ImageFilterLab', keyword: 'image filter / image filter online', tool: 'filters' },
+      { slug: 'ai-image-filter', title: 'AI Image Filter Online Free — Browser Artistic Presets', keyword: 'ai image filter', tool: 'filters', preset: 'ai-image-filter' },
+      { slug: 'virtual-makeup-studio', title: 'Virtual Makeup Studio — Try Lipstick, Eyeshadow & Blush Online', keyword: 'virtual makeup editor', tool: 'makeup' },
+      { slug: 'online-beauty-retouching', title: 'Online Beauty Retouching & Skin Smoothing Photo Editor', keyword: 'online beauty retouching', tool: 'retouch' },
+      { slug: 'online-sticker-editor', title: 'Online Sticker Editor — Add Stickers to Photos Free', keyword: 'photo sticker editor', tool: 'stickers' },
+      { slug: 'image-text-editor', title: 'Image Text Editor — Add Text & Speech Bubbles Online', keyword: 'add text to image online', tool: 'text' },
+      { slug: 'photo-frame-editor', title: 'Photo Frame Editor Online — Polaroid, Film & Wedding', keyword: 'photo frame editor', tool: 'frames' },
+      { slug: 'black-and-white-image-filter', title: 'Black and White Image Filter Online — Monochrome Converter', keyword: 'black and white image filter', tool: 'filters', preset: 'bw' },
+      { slug: 'vintage-image-filter', title: 'Vintage Image Filter Online — Retro Film Photo Editor', keyword: 'vintage image filter', tool: 'filters', preset: 'vintage' },
+      { slug: 'vhs-image-filter', title: 'VHS Image Filter Online — 1980s Analog Video Effect', keyword: 'vhs image filter', tool: 'filters', preset: 'vhs' },
+      { slug: 'css-filter-generator', title: 'CSS Filter Generator — Visual Slider to CSS Code Tool', keyword: 'css filter generator', tool: 'filters', sub: 'css' },
+      { slug: 'flutter-image-filter', title: 'Flutter Image Filter Tutorial — ColorFiltered & ImageFilter.blur', keyword: 'flutter image filter', tool: 'filters' },
+      { slug: 'chatgpt-image-filter-safety', title: 'ChatGPT Image Filter Safety: How Moderation Works & Safe Alternatives', keyword: 'how to bypass chatgpt image filter', tool: 'filters' },
+      { slug: 'seo-architecture', title: 'Complete 31-Page SEO Keyword Map & cPanel Deployment Files', keyword: 'seo sitemap' }
+    ];
+
+    function navigateTo(slug) { renderSeoPage(slug); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+
+    function renderSeoPage(slug) {
+      const page = SEO_PAGES.find(p => p.slug === slug) || SEO_PAGES[0];
+      document.title = page.title;
+      document.getElementById('seo-title').textContent = page.title;
+      document.getElementById('seo-canonical').setAttribute('href', `https://imagefilterlab.com/${slug === 'home' ? '' : slug + '.html'}`);
+      document.getElementById('seo-target-badge').textContent = `Target Keyword: ${page.keyword}`;
+
+      const bc = document.getElementById('breadcrumb-bar');
+      if (slug === 'home') bc.classList.add('hidden');
+      else { bc.classList.remove('hidden'); document.getElementById('breadcrumb-current').textContent = page.title.split('—')[0].trim(); }
+
+      if (page.tool) selectStudioTool(page.tool);
+      if (page.sub) switchFilterSubTab(page.sub);
+      if (page.preset) applyFilterPreset(page.preset);
+
+      const h1 = document.getElementById('page-h1'); const sub = document.getElementById('page-subtitle'); const wrap = document.getElementById('seo-content-wrapper');
+
+      if (slug === 'home') {
+        h1.textContent = 'Free Online Image Filter and Photo Editing Studio';
+        sub.textContent = 'Edit photos non-destructively in your browser with AI-style filters, Virtual Makeup Studio, Beauty Retouching, Stickers, Custom Text, Photo Frames, Crop/Resize, and CSS Filter Generator.';
+        wrap.innerHTML = buildHomepageSections();
+      } else if (slug === 'flutter-image-filter') {
+        h1.textContent = 'Flutter Image Filter Tutorial: ColorFiltered & ImageFilter.blur';
+        sub.textContent = 'Complete developer guide to GPU-accelerated image filtering in Flutter using dart:ui ImageFilter and 4×5 color matrices.';
+        wrap.innerHTML = `<article class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-4"><h2 class="text-xl font-extrabold">Flutter Image Filters</h2><p class="text-sm">Use <code>ColorFiltered</code> with a 4×5 matrix in Flutter.</p></article>`;
+      } else if (slug === 'chatgpt-image-filter-safety') {
+        h1.textContent = 'ChatGPT Image Filter Safety Explained';
+        sub.textContent = 'Educational overview explaining AI moderation guardrails and safe client-side editing alternatives.';
+        wrap.innerHTML = `<article class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-4"><h2 class="text-xl font-extrabold">AI Safety Guidelines</h2><p class="text-sm">ImageFilterLab operates 100% locally in your browser with zero server uploads.</p></article>`;
+      } else if (slug === 'seo-architecture') {
+        h1.textContent = '31-Page SEO Keyword Mapping & Deployment';
+        sub.textContent = 'Download sitemap.xml, robots.txt, and README.md for cPanel shared hosting.';
+        wrap.innerHTML = `<div class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-4"><h2 class="text-xl font-extrabold">SEO Architecture</h2><button onclick="downloadDeploymentFile('sitemap.xml')" class="px-3 py-1.5 rounded-xl bg-indigo-600 text-white text-xs font-bold">Download sitemap.xml</button></div>`;
+      } else {
+        h1.textContent = page.title.split('—')[0].trim();
+        sub.textContent = `Use the interactive multi-layer workspace above to apply ${page.keyword} tools in real time.`;
+        wrap.innerHTML = `<article class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-4"><h2 class="text-xl font-extrabold">About ${page.title}</h2><p class="text-sm">Fast, privacy-first browser tools optimized for ${page.keyword}.</p></article>`;
+      }
+    }
+
+    function buildHomepageSections() {
+      return `
+        <section class="space-y-4">
+          <h2 class="text-xl sm:text-2xl font-extrabold">All-in-One Online Photo Editing Studios</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            ${[
+              { slug: 'virtual-makeup-studio', title: 'Virtual Makeup Studio', desc: 'Apply lipstick, blush, and eyeshadow with draggable landmark pins.' },
+              { slug: 'online-beauty-retouching', title: 'Beauty Retouching Studio', desc: 'Skin smoothing, blemish healing brush, and portrait glow.' },
+              { slug: 'online-sticker-editor', title: 'Sticker & Emoji Studio', desc: '15 sticker categories with drag, rotate, flip & layer control.' },
+              { slug: 'image-text-editor', title: 'Text & Typography Editor', desc: 'Add custom captions and speech bubbles with Google Fonts.' }
+            ].map(c => `
+              <div onclick="navigateTo('${c.slug}')" class="cursor-pointer p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-indigo-500 transition space-y-2">
+                <h3 class="font-bold text-sm">${c.title}</h3>
+                <p class="text-xs text-slate-600 dark:text-slate-400">${c.desc}</p>
+              </div>
+            `).join('')}
+          </div>
+        </section>
+      `;
+    }
+
+    function downloadDeploymentFile(filename) {
+      let content = filename === 'sitemap.xml' ? '<?xml version="1.0"?><urlset></urlset>' : 'User-agent: *\nAllow: /';
+      const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+      const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = filename; link.click();
+      showToast(`Downloaded ${filename}`);
+    }
+  </script>
 </body>
 </html>
